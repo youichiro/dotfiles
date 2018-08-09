@@ -1,3 +1,9 @@
+" Initial settings
+" mkdir -p ~/.vim/bundle ~/.vim/colors
+" git clone git://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim
+" git clone https://github.com/w0ng/vim-hybrid.git ~/.vim/bundle/vim-hybrid.git
+" ln -s ~/.vim/bundle/vim-hybrid.git/colors/hybrid.vim ~/.vim/colors/hybrid.vim
+
 set background=dark
 colorscheme hybrid
 
@@ -11,7 +17,6 @@ set title
 set paste
 set ruler
 set incsearch
-"set autoindent
 syntax on
 
 
