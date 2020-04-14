@@ -30,6 +30,11 @@ hi SpecialKey guibg=NONE guifg=gray
 autocmd FileType python setl smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
 autocmd FileType python setl tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
+"coding
+set encoding=utf-8
+set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8
+set fileformats=unix,dos,mac
+
 
 "NeoBundle Scripts-----------------------------
 if &compatible

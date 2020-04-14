@@ -1,10 +1,4 @@
 # PATH
-export PATH=$PATH:$HOME/.local/bin
-export PATH=$PATH:$HOME/.pyenv/bin
-export PATH=$PATH:/tools/env/lib/mecab
-export PATH=$PATH:/tools/env/bin/mecab
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
 
 
 # export
@@ -47,11 +41,8 @@ alias zshrc='vim ~/.zshrc'
 alias vimrc='vim ~/.vimrc'
 alias la='ls -a'
 alias ll='ls -l'
-alias lab='cd /lab/ogawa'
 alias h='history'
 alias tmuxconf='vim ~/.tmux.conf'
-alias tmux-a='tmux attach'
-alias tmux-k='tmux kill-session'
 
 
 # show branch name
