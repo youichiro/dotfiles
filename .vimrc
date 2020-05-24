@@ -1,24 +1,35 @@
-" Initial settings
-" mkdir -p ~/.vim/bundle ~/.vim/colors
-" git clone git://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim
-" git clone https://github.com/w0ng/vim-hybrid.git ~/.vim/bundle/vim-hybrid.git
-" ln -s ~/.vim/bundle/vim-hybrid.git/colors/hybrid.vim ~/.vim/colors/hybrid.vim
+"""Initial settings"""
+"git clone https://github.com/w0ng/vim-hybrid.git ~/.vim/bundle/vim-hybrid.git
+"ln -s ~/.vim/bundle/vim-hybrid.git/colors/hybrid.vim ~/.vim/colors/hybrid.vim
+"curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-set background=dark
 colorscheme hybrid
 
 set number
+set smarttab
 set expandtab
-set tabstop=4
+set tabstop=2
+set shiftwidth=2
+set autoindent
 set smartindent
-set shiftwidth=4
 set backspace=indent,eol,start
 set title
-set paste
 set ruler
 set incsearch
-syntax on
+set cursorline
+set showmatch
+set showcmd
+set wrapscan
+set hlsearch
+set virtualedit=block
+set wildmenu
+set ignorecase
+set guioptions+=R
+set laststatus=2
+syntax enable
 
+"esc2回押しでハイライト削除
+nnoremap <ESC><ESC> :nohlsearch<CR><ESC>
 
 "Tab visualization
 set list
@@ -26,41 +37,43 @@ set listchars=tab:..,trail:-,extends:>,precedes:<,nbsp:%
 autocmd VimEnter,Colorscheme * highlight SpecialKey cterm=NONE ctermfg=244 ctermbg=NONE
 hi SpecialKey guibg=NONE guifg=gray
 
-"autocmd FileType python setl autoindent
-autocmd FileType python setl smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
-autocmd FileType python setl tabstop=8 expandtab shiftwidth=4 softtabstop=4
-
-"coding
-set encoding=utf-8
-set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8
-set fileformats=unix,dos,mac
+"indent
+augroup fileTypeIndent
+    autocmd!
+    autocmd BufNewFile,BufRead *.py setlocal tabstop=4 shiftwidth=4
+augroup END
 
 
-"NeoBundle Scripts-----------------------------
-if &compatible
-  set nocompatible
+"""vim-plug"""
+call plug#begin('~/.vim/plugged')
+"filetreeを表示(:NERDTree)
+Plug 'scrooloose/nerdtree'
+"Ruby向けにendを自動挿入してくれる
+Plug 'tpope/vim-endwise'
+"コメントON/OFF(ctrl+-)
+Plug 'tomtom/tcomment_vim'
+"行末の半角スペースを可視化
+Plug 'bronson/vim-trailing-whitespace'
+"vim-lsp
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+call plug#end()
+
+
+"""全角スペースの表示"""
+function! ZenkakuSpace()
+    highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
+endfunction
+
+if has('syntax')
+    augroup ZenkakuSpace
+        autocmd!
+        autocmd ColorScheme * call ZenkakuSpace()
+        autocmd VimEnter,WinEnter,BufRead * let w:m1=matchadd('ZenkakuSpace', '　')
+    augroup END
+    call ZenkakuSpace()
 endif
 
-" Required:
-set runtimepath+=/home/ogawa/.vim/bundle/neobundle.vim/
-
-" Required:
-call neobundle#begin(expand('/home/ogawa/.vim/bundle'))
-
-" Required:
-NeoBundleFetch 'Shougo/neobundle.vim'
-
-" Add or remove your Bundles here:
-NeoBundle 'ctrlpvim/ctrlp.vim'
-NeoBundle 'tomtom/tcomment_vim'
-NeoBundle 'Shougo/vimshell.vim'
-NeoBundle 'Shougo/vimproc.vim'
-
-" Required:
-call neobundle#end()
-
-" Required:
-filetype plugin indent on
-
-NeoBundleCheck
-"End NeoBundle Scripts-------------------------
