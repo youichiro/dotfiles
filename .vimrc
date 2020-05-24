@@ -5,6 +5,7 @@
 
 colorscheme hybrid
 
+set shell=/usr/local/bin/zsh
 set number
 set smarttab
 set expandtab
@@ -26,6 +27,7 @@ set wildmenu
 set ignorecase
 set guioptions+=R
 set laststatus=2
+set completeopt=menuone,noinsert
 syntax enable
 
 "esc2回押しでハイライト削除
@@ -60,6 +62,16 @@ Plug 'prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
+"gitの差分を表示(:Gstatus)
+Plug 'airblade/vim-gitgutter'
+"git操作
+Plug 'tpope/vim-fugitive'
+"status-bar
+Plug 'vim-airline/vim-airline'
+"fzf(:FZF)
+Plug 'junegunn/fzf'
+"補完
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
 
 
