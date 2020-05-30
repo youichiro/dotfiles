@@ -5,7 +5,7 @@
 
 colorscheme hybrid
 
-set shell=/usr/local/bin/zsh
+set shell=$SHELL
 set number
 set smarttab
 set expandtab
@@ -50,6 +50,7 @@ augroup END
 call plug#begin('~/.vim/plugged')
 "filetreeを表示(:NERDTree)
 Plug 'scrooloose/nerdtree'
+let NERDTreeShowHidden = 1
 "Ruby向けにendを自動挿入してくれる
 Plug 'tpope/vim-endwise'
 "コメントON/OFF(ctrl+-)
@@ -72,6 +73,8 @@ Plug 'vim-airline/vim-airline'
 Plug 'junegunn/fzf'
 "補完
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"HTMLの閉じカッコ補完
+Plug 'alvan/vim-closetag'
 call plug#end()
 
 
@@ -88,4 +91,11 @@ if has('syntax')
     augroup END
     call ZenkakuSpace()
 endif
+
+" HTMLの閉じカッコ補完
+augroup HTMLANDXML
+  autocmd!
+  autocmd Filetype xml inoremap <buffer> </ </<C-x><C-o>
+  autocmd Filetype html inoremap <buffer> </ </<C-x><C-o>
+augroup END
 
