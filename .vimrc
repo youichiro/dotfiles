@@ -28,6 +28,7 @@ set ignorecase
 set guioptions+=R
 set laststatus=2
 set completeopt=menuone,noinsert
+set noswapfile
 syntax enable
 
 "esc2回押しでハイライト削除
@@ -61,8 +62,6 @@ Plug 'bronson/vim-trailing-whitespace'
 Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
 "gitの差分を表示(:Gstatus)
 Plug 'airblade/vim-gitgutter'
 "git操作
