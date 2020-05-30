@@ -98,3 +98,14 @@ augroup HTMLANDXML
   autocmd Filetype html inoremap <buffer> </ </<C-x><C-o>
 augroup END
 
+"ctrl+eでNERDTreeを開く
+nnoremap <silent><C-e> :NERDTreeToggle<CR>
+
+"括弧の補完
+inoremap { {}<Left>
+inoremap {<Enter> {}<Left><CR><Esc><S-o><Tab>
+inoremap ( ()<Esc>i
+inoremap (<Enter> ()<Left><CR><Esc><S-o><Tab>
+inoremap ' ''<Left>
+inoremap " ""<Left>
+
