@@ -29,7 +29,7 @@ set guioptions+=R
 set laststatus=2
 set completeopt=menuone,noinsert
 set noswapfile
-syntax enable
+syntax off
 
 "esc2回押しでハイライト削除
 nnoremap <ESC><ESC> :nohlsearch<CR><ESC>
@@ -74,6 +74,15 @@ Plug 'junegunn/fzf'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 "HTMLの閉じカッコ補完
 Plug 'alvan/vim-closetag'
+"JSハイライト
+Plug 'othree/yajs.vim'
+"閉じカッコ補完
+Plug 'mattn/vim-lexiv'
+" スニペット
+" ex) :Template readme-sharp, :Template web-echo
+Plug 'mattn/vim-sonictemplate'
+" 検索(ctrl+p)
+Plug 'ctrlpvim/ctrlp.vim'
 call plug#end()
 
 
@@ -91,21 +100,6 @@ if has('syntax')
     call ZenkakuSpace()
 endif
 
-" HTMLの閉じカッコ補完
-augroup HTMLANDXML
-  autocmd!
-  autocmd Filetype xml inoremap <buffer> </ </<C-x><C-o>
-  autocmd Filetype html inoremap <buffer> </ </<C-x><C-o>
-augroup END
-
 "ctrl+eでNERDTreeを開く
 nnoremap <silent><C-e> :NERDTreeToggle<CR>
-
-"括弧の補完
-inoremap { {}<Left>
-inoremap {<Enter> {}<Left><CR><Esc><S-o><Tab>
-inoremap ( ()<Esc>i
-inoremap (<Enter> ()<Left><CR><Esc><S-o><Tab>
-inoremap ' ''<Left>
-inoremap " ""<Left>
 
