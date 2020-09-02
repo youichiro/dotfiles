@@ -102,4 +102,5 @@ alias gd='git diff'
 alias gds='git diff --staged'
 alias gcm='git commit -m'
 alias gl='git log --oneline --graph --decorate'
+alias gp='git push origin HEAD'
 
