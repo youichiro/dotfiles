@@ -1,11 +1,23 @@
+# setup
+# brew install fzf
+# brew install peco
+# brew install tig
+
+
 # PATH
 
 
-# export
+# history
 export LANG=ja_JP.UTF-8
 export HISTFILE=~/.zsh_history
 export HISTSIZE=10000
 export SAVEHIST=1000000
+export HISTFILESIZE=10000
+setopt hist_ignore_dups
+setopt hist_reduce_blanks
+setopt hist_no_store
+setopt hist_expand
+setopt inc_append_history
 
 
 # option
@@ -30,21 +42,6 @@ colors
 PROMPT="%{${fg[yellow]}%}[%n@%m]%{${reset_color}%} %~ %# "
 
 
-# alias
-alias -g L='| less'
-alias -g G='| grep'
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-alias reload='exec $SHELL -l'
-alias zshrc='vim ~/.zshrc'
-alias vimrc='vim ~/.vimrc'
-alias la='ls -a'
-alias ll='ls -l'
-alias h='history'
-alias tmuxconf='vim ~/.tmux.conf'
-
-
 # show branch name
 autoload -Uz vcs_info
 setopt prompt_subst
@@ -57,9 +54,52 @@ precmd () { vcs_info }
 RPROMPT=$RPROMPT'${vcs_info_msg_0_}'
 
 
-# others
-autoload -Uz compinit # 補完機能を有効にする
+# complement
+autoload -Uz compinit
 compinit
+
+
+# functions
 function cd(){ builtin cd $@ && ls; } # cdしたらlsする
-cd /lab/ogawa
+
+function fvim() {
+  files=$(git ls-files) &&
+  selected_files=$(echo "$files" | fzf -m --preview 'head -100 {}') &&
+  vim $selected_files
+}
+
+function peco-history-selection() {
+  BUFFER=`history -n 1 | tail -r  | awk '!a[$0]++' | peco`
+  eval $BUFFER
+}
+
+
+# vals
+export EDITOR='vim'
+
+
+# alias
+alias -g L='| less'
+alias -g G='| grep'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias reload='exec $SHELL -l'
+alias zshrc='vim ~/.zshrc'
+alias vimrc='vim ~/.vimrc'
+alias tmuxconf='vim ~/.tmux.conf'
+alias la='ls -a'
+alias ll='ls -l'
+alias lla='ls -la'
+alias h='history'
+alias hs=peco-history-selection
+
+
+# alias for git
+alias gs='git status'
+alias ga='git add'
+alias gd='git diff'
+alias gds='git diff --staged'
+alias gcm='git commit -m'
+alias gl='git log --oneline --graph --decorate'
 

@@ -29,6 +29,8 @@ set guioptions+=R
 set laststatus=2
 set completeopt=menuone,noinsert
 set noswapfile
+set mouse=a
+set clipboard+=unnamed
 syntax enable
 
 "esc2回押しでハイライト削除
@@ -77,7 +79,7 @@ Plug 'alvan/vim-closetag'
 call plug#end()
 
 
-"""全角スペースの表示"""
+"全角スペースの表示
 function! ZenkakuSpace()
     highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
 endfunction
@@ -91,7 +93,7 @@ if has('syntax')
     call ZenkakuSpace()
 endif
 
-" HTMLの閉じカッコ補完
+"HTMLの閉じカッコ補完
 augroup HTMLANDXML
   autocmd!
   autocmd Filetype xml inoremap <buffer> </ </<C-x><C-o>
