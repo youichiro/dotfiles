@@ -1,7 +1,32 @@
 """Initial settings"""
-"git clone https://github.com/w0ng/vim-hybrid.git ~/.vim/bundle/vim-hybrid.git
-"ln -s ~/.vim/bundle/vim-hybrid.git/colors/hybrid.vim ~/.vim/colors/hybrid.vim
-"curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+" git clone https://github.com/w0ng/vim-hybrid.git ~/.vim/bundle/vim-hybrid.git
+" ln -s ~/.vim/bundle/vim-hybrid.git/colors/hybrid.vim ~/.vim/colors/hybrid.vim
+" curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+"""usage"""
+" default
+" `u` undo(戻す)
+" `ctrl+r` redo(戻すを戻す)
+" `gt` 次のタブに切り替える
+" `ctrl+w 矢印` ペインの移動
+" `ctrl+w ctrl+w` ペインの移動
+" `:term` ターミナルを開く
+"   `:bo term` 水平分割して最下部でターミナルを開く
+"   `:vert term` 垂直分割してターミナルを開く
+"   `:tab term` 新規タブでターミナルを開く
+"     `ctrl+w gt`でタグを切り替える
+" `:vs` 垂直方向に画面分割する
+" `:sp` 水平方向に画面分割する
+
+" expanded
+" `ctrl+e` ファイルツリーを開く
+" `ctrl+p` ファイルを検索する
+"   `ctrl+t` 新規タブでファイルを開く
+"   `ctrl+v` 垂直分割してファイルを開く
+"   `ctrl+s` 水平分割してファイルを開く
+
+" custom
+" `ctrl+t` :bo term
 
 colorscheme hybrid
 
@@ -31,18 +56,17 @@ set completeopt=menuone,noinsert
 set noswapfile
 set mouse=a
 set clipboard+=unnamed
+set splitbelow  " :termで最下部にターミナルを開く
+set termwinsize=16x0  " ターミナルのサイズを指定
 syntax enable
 
-"esc2回押しでハイライト削除
-nnoremap <ESC><ESC> :nohlsearch<CR><ESC>
-
-"Tab visualization
+" Tab visualization
 set list
 set listchars=tab:..,trail:-,extends:>,precedes:<,nbsp:%
 autocmd VimEnter,Colorscheme * highlight SpecialKey cterm=NONE ctermfg=244 ctermbg=NONE
 hi SpecialKey guibg=NONE guifg=gray
 
-"indent
+" indent
 augroup fileTypeIndent
     autocmd!
     autocmd BufNewFile,BufRead *.py setlocal tabstop=4 shiftwidth=4
@@ -51,34 +75,34 @@ augroup END
 
 """vim-plug"""
 call plug#begin('~/.vim/plugged')
-"filetreeを表示(:NERDTree)
+" filetreeを表示(:NERDTree)
 Plug 'scrooloose/nerdtree'
 let NERDTreeShowHidden = 1
-"Ruby向けにendを自動挿入してくれる
+" Ruby向けにendを自動挿入してくれる
 Plug 'tpope/vim-endwise'
-"コメントON/OFF(ctrl+-)
+" コメントON/OFF(ctrl+-)
 Plug 'tomtom/tcomment_vim'
-"行末の半角スペースを可視化
+" 行末の半角スペースを可視化
 Plug 'bronson/vim-trailing-whitespace'
-"vim-lsp
+" vim-lsp
 Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
-"gitの差分を表示(:Gstatus)
+" gitの差分を表示(:Gstatus)
 Plug 'airblade/vim-gitgutter'
-"git操作
+" git操作
 Plug 'tpope/vim-fugitive'
-"status-bar
+" status-bar
 Plug 'vim-airline/vim-airline'
-"fzf(:FZF)
+" fzf(:FZF)
 Plug 'junegunn/fzf'
-"補完
+" 補完
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-"HTMLの閉じカッコ補完
+" HTMLの閉じカッコ補完
 Plug 'alvan/vim-closetag'
-"JSハイライト
+" JSハイライト
 Plug 'othree/yajs.vim'
-"閉じカッコ補完
+" 閉じカッコ補完
 Plug 'mattn/vim-lexiv'
 " スニペット
 " ex) :Template readme-sharp, :Template web-echo
@@ -88,7 +112,7 @@ Plug 'ctrlpvim/ctrlp.vim'
 call plug#end()
 
 
-"全角スペースの表示
+" 全角スペースの表示
 function! ZenkakuSpace()
     highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
 endfunction
@@ -102,6 +126,9 @@ if has('syntax')
     call ZenkakuSpace()
 endif
 
-"ctrl+eでNERDTreeを開く
+" ctrl+eでNERDTreeを開く
 nnoremap <silent><C-e> :NERDTreeToggle<CR>
+
+" ctrl+tでターミナルを開く
+nnoremap <silent><C-t> :bo term<CR>
 
