@@ -136,3 +136,6 @@ nnoremap <silent><C-e> :NERDTreeToggle<CR>
 " ctrl+tでターミナルを開く
 nnoremap <silent><C-t> :bo term<CR>
 
+" jjでノーマルモードに切り替える
+inoremap <silent> jj <ESC>
+
