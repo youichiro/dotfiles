@@ -20,6 +20,7 @@
 
 " expanded
 " `ctrl+e` ファイルツリーを開く
+"   `m`    ファイルの作成等
 " `ctrl+p` ファイルを検索する
 "   `ctrl+t` 新規タブでファイルを開く
 "   `ctrl+v` 垂直分割してファイルを開く
@@ -74,6 +75,7 @@ augroup END
 
 
 """vim-plug"""
+" :PlugInstall 以下のプラグインをインストールする
 call plug#begin('~/.vim/plugged')
 " filetreeを表示(:NERDTree)
 Plug 'scrooloose/nerdtree'
@@ -109,6 +111,8 @@ Plug 'mattn/vim-lexiv'
 Plug 'mattn/vim-sonictemplate'
 " 検索(ctrl+p)
 Plug 'ctrlpvim/ctrlp.vim'
+" vue
+Plug 'posva/vim-vue'
 call plug#end()
 
 
