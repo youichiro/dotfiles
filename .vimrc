@@ -79,7 +79,8 @@ augroup END
 call plug#begin('~/.vim/plugged')
 " filetreeを表示(:NERDTree)
 Plug 'scrooloose/nerdtree'
-let NERDTreeShowHidden = 1
+" タブでもfiletreeを表示
+Plug 'jistr/vim-nerdtree-tabs'
 " Ruby向けにendを自動挿入してくれる
 Plug 'tpope/vim-endwise'
 " コメントON/OFF(ctrl+-)
@@ -133,6 +134,15 @@ endif
 " ctrl+eでNERDTreeを開く
 nnoremap <silent><C-e> :NERDTreeToggle<CR>
 
+" 隠しファイルを表示する
+let NERDTreeShowHidden = 1
+
+" デフォルトでツリーを表示させる
+" let g:nerdtree_tabs_open_on_console_startup=1
+
+" 他のバッファをすべて閉じた時にNERDTreeが開いていたらNERDTreeも一緒に閉じる。
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
 " ctrl+tでターミナルを開く
 nnoremap <silent><C-t> :bo term<CR>
 
@@ -169,8 +179,8 @@ let &tabline = '%!'. s:SID_PREFIX() . 'my_tabline()'
 set showtabline=2 " 常にタブラインを表示
 
 " The prefix key.
-nnoremap    [Tag]   <Nop>
-nmap    t [Tag]
+nnoremap [Tag] <Nop>
+nmap t [Tag]
 " Tab jump
 for n in range(1, 9)
   execute 'nnoremap <silent> [Tag]'.n  ':<C-u>tabnext'.n.'<CR>'
