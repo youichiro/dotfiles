@@ -134,6 +134,9 @@ endif
 " ctrl+eでNERDTreeを開く
 nnoremap <silent><C-e> :NERDTreeToggle<CR>
 
+" ctrl+fで現在のファイルをNERDTreeでフォーカスする
+nnoremap <silent><C-f> :NERDTreeFind<CR>
+
 " 隠しファイルを表示する
 let NERDTreeShowHidden = 1
 
