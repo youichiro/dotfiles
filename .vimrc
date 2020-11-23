@@ -69,9 +69,12 @@ hi SpecialKey guibg=NONE guifg=gray
 
 " indent
 augroup fileTypeIndent
-    autocmd!
-    autocmd BufNewFile,BufRead *.py setlocal tabstop=4 shiftwidth=4
+  autocmd!
+  autocmd BufNewFile,BufRead *.py setlocal tabstop=4 shiftwidth=4
 augroup END
+
+" ハイライトを解除する
+nnoremap <Esc><Esc> :noh<CR>
 
 
 """vim-plug"""
@@ -96,9 +99,9 @@ Plug 'airblade/vim-gitgutter'
 " git操作
 Plug 'tpope/vim-fugitive'
 " status-bar
-Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline'
 " fzf(:FZF)
-Plug 'junegunn/fzf'
+" Plug 'junegunn/fzf'
 " 補完
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " HTMLの閉じカッコ補完
@@ -107,13 +110,20 @@ Plug 'alvan/vim-closetag'
 Plug 'othree/yajs.vim'
 " 閉じカッコ補完
 Plug 'mattn/vim-lexiv'
-" スニペット
-" ex) :Template readme-sharp, :Template web-echo
-Plug 'mattn/vim-sonictemplate'
 " 検索(ctrl+p)
 Plug 'ctrlpvim/ctrlp.vim'
+" ctrlpを早くする
+Plug 'mattn/ctrlp-matchfuzzy'
 " vue
 Plug 'posva/vim-vue'
+" markdown
+Plug 'plasticboy/vim-markdown'
+" markdown preview (:Minidownでブラウザが起動する)
+Plug 'iwataka/minidown.vim'
+
+" 開いたファイルの履歴
+Plug 'Shougo/unite.vim'
+Plug 'Shougo/neomru.vim'
 call plug#end()
 
 
@@ -131,11 +141,11 @@ if has('syntax')
     call ZenkakuSpace()
 endif
 
-" ctrl+eでNERDTreeを開く
-nnoremap <silent><C-e> :NERDTreeToggle<CR>
+" ctrl+nでNERDTreeを開く
+nnoremap <silent><C-n> :NERDTreeToggle<CR>
 
-" ctrl+fで現在のファイルをNERDTreeでフォーカスする
-nnoremap <silent><C-f> :NERDTreeFind<CR>
+" ctrl+cで現在のファイルをNERDTreeでフォーカスする
+nnoremap <silent><C-c> :NERDTreeFind<CR>
 
 " 隠しファイルを表示する
 let NERDTreeShowHidden = 1
@@ -198,4 +208,17 @@ map <silent> [Tag]n :tabnext<CR>
 " tn 次のタブ
 map <silent> [Tag]p :tabprevious<CR>
 " tp 前のタブ
+
+" vim-markdownの設定
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_auto_insert_bullets = 0
+let g:vim_markdown_new_list_item_indent = 0
+
+" Unite.vimの設定
+" 最近使ったファイル一覧
+nnoremap <C-q> :Unite file_mru<CR>
+let g:unite_source_file_mru_limit = 10
+
+" ctrlpを早くする
+let g:ctrlp_match_func = {'match': 'ctrlp_matchfuzzy#matcher'}
 
