@@ -99,7 +99,8 @@ Plug 'airblade/vim-gitgutter'
 " git操作
 Plug 'tpope/vim-fugitive'
 " status-bar
-" Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 " fzf(:FZF)
 " Plug 'junegunn/fzf'
 " 補完
@@ -151,7 +152,7 @@ nnoremap <silent><C-c> :NERDTreeFind<CR>
 let NERDTreeShowHidden = 1
 
 " デフォルトでツリーを表示させる
-let g:nerdtree_tabs_open_on_console_startup=1
+" let g:nerdtree_tabs_open_on_console_startup=1
 
 " 他のバッファをすべて閉じた時にNERDTreeが開いていたらNERDTreeも一緒に閉じる。
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
@@ -200,14 +201,14 @@ for n in range(1, 9)
 endfor
 " t1 で1番左のタブ、t2 で1番左から2番目のタブにジャンプ
 
-map <silent> [Tag]c :tablast <bar> tabnew<CR>
 " tc 新しいタブを一番右に作る
-map <silent> [Tag]x :tabclose<CR>
+map <silent> [Tag]c :tablast <bar> tabnew<CR>
 " tx タブを閉じる
-map <silent> [Tag]n :tabnext<CR>
+map <silent> [Tag]x :tabclose<CR>
 " tn 次のタブ
-map <silent> [Tag]p :tabprevious<CR>
+map <silent> [Tag]n :tabnext<CR>
 " tp 前のタブ
+map <silent> [Tag]p :tabprevious<CR>
 
 " vim-markdownの設定
 let g:vim_markdown_folding_disabled = 1
@@ -222,3 +223,16 @@ let g:unite_source_file_mru_limit = 10
 " ctrlpを早くする
 let g:ctrlp_match_func = {'match': 'ctrlp_matchfuzzy#matcher'}
 
+" vim-airline
+" tab line有効化
+let g:airline#extensions#tabline#enabled = 1
+" ステータスバーに表示する項目
+let g:airline#extensions#default#layout = [
+	\ [ 'a', 'b', 'c' ],
+	\ ['z']
+	\ ]
+let g:airline_section_z = get(g:, 'airline_linecolumn_prefix', '').'%3l:%-2v'
+" （タブが一個の場合）バッファのリストをタブラインに表示する機能をオフ
+let g:airline#extensions#tabline#show_buffers = 0
+" 0でそのタブで開いてるウィンドウ数、1で左のタブから連番
+let g:airline#extensions#tabline#tab_nr_type = 1
