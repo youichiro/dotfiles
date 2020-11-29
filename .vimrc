@@ -236,3 +236,6 @@ let g:airline_section_z = get(g:, 'airline_linecolumn_prefix', '').'%3l:%-2v'
 let g:airline#extensions#tabline#show_buffers = 0
 " 0でそのタブで開いてるウィンドウ数、1で左のタブから連番
 let g:airline#extensions#tabline#tab_nr_type = 1
+" テーマ
+let g:airline_theme = 'hybrid'
+
