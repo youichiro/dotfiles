@@ -3,6 +3,7 @@
 " ln -s ~/.vim/bundle/vim-hybrid.git/colors/hybrid.vim ~/.vim/colors/hybrid.vim
 " curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
+set background=dark
 colorscheme hybrid
 
 set shell=$SHELL
@@ -33,6 +34,10 @@ set mouse=a
 set clipboard+=unnamed
 set splitbelow  " :termで最下部にターミナルを開く
 set termwinsize=16x0  " ターミナルのサイズを指定
+" 文字化け対策
+set encoding=utf-8
+set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8
+set fileformats=unix,dos,mac
 syntax enable
 
 " Tab visualization
