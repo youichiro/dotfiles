@@ -3,32 +3,6 @@
 " ln -s ~/.vim/bundle/vim-hybrid.git/colors/hybrid.vim ~/.vim/colors/hybrid.vim
 " curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-"""usage"""
-" default
-" `u` undo(戻す)
-" `ctrl+r` redo(戻すを戻す)
-" `gt` 次のタブに切り替える
-" `ctrl+w 矢印` ペインの移動
-" `ctrl+w ctrl+w` ペインの移動
-" `:term` ターミナルを開く
-"   `:bo term` 水平分割して最下部でターミナルを開く
-"   `:vert term` 垂直分割してターミナルを開く
-"   `:tab term` 新規タブでターミナルを開く
-"     `ctrl+w gt`でタグを切り替える
-" `:vs` 垂直方向に画面分割する
-" `:sp` 水平方向に画面分割する
-
-" expanded
-" `ctrl+e` ファイルツリーを開く
-"   `m`    ファイルの作成等
-" `ctrl+p` ファイルを検索する
-"   `ctrl+t` 新規タブでファイルを開く
-"   `ctrl+v` 垂直分割してファイルを開く
-"   `ctrl+s` 水平分割してファイルを開く
-
-" custom
-" `ctrl+t` :bo term
-
 colorscheme hybrid
 
 set shell=$SHELL
