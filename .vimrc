@@ -110,6 +110,8 @@ Plug 'iwataka/minidown.vim'
 " fzf
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+" windowのリサイズ (<C-e>でリサイズモード, hjklでリサイズ)
+Plug 'simeji/winresizer'
 
 call plug#end()
 
@@ -191,20 +193,20 @@ let g:vim_markdown_new_list_item_indent = 0
 
 
 "" vim-airline
+" テーマ
+let g:airline_theme = 'hybrid'
 " tab line有効化
 let g:airline#extensions#tabline#enabled = 1
+" (タブが一個の場合) バッファのリストをタブラインに表示する機能をオフ
+let g:airline#extensions#tabline#show_buffers = 0
+" 0でそのタブで開いてるウィンドウ数、1で左のタブから連番
+let g:airline#extensions#tabline#tab_nr_type = 1
 " ステータスバーに表示する項目
 let g:airline#extensions#default#layout = [
 	\ [ 'a', 'b', 'c' ],
 	\ ['z']
 	\ ]
 let g:airline_section_z = get(g:, 'airline_linecolumn_prefix', '').'%3l:%-2v'
-" （タブが一個の場合）バッファのリストをタブラインに表示する機能をオフ
-let g:airline#extensions#tabline#show_buffers = 0
-" 0でそのタブで開いてるウィンドウ数、1で左のタブから連番
-let g:airline#extensions#tabline#tab_nr_type = 1
-" テーマ
-let g:airline_theme = 'hybrid'
 
 
 "" fzf.vim
@@ -212,6 +214,7 @@ nnoremap fb :Buffers<CR>
 nnoremap fl :BLines<CR>
 nnoremap fm :Marks<CR>
 nnoremap fh :History<CR>
+nnoremap fp :History<CR><CR>
 nnoremap fc :Commits<CR>
 
 " :Files
@@ -230,10 +233,9 @@ command! -bang -nargs=* Rg
 \ call fzf#vim#grep(
 \ 'rg --column --line-number --hidden --ignore-case --no-heading --color=always '.shellescape(<q-args>), 1,
 \ <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 3..'}, 'up:60%')
-\ : fzf#vim#with_preview({'options': '--exact --reverse --delimiter : --nth 3..'}, 'right:50%:hidden', '?'),
+\ : fzf#vim#with_preview({'options': '--exact --delimiter : --nth 3..'}, 'right:50%:hidden', '?'),
 \ <bang>0)
 nnoremap <C-g> :Rg<CR>
-
 
 " :Ag ファイル名とマッチングさせない
 command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 3..'}, <bang>0)
