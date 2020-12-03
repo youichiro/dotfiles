@@ -26,6 +26,7 @@ set hlsearch
 set virtualedit=block
 set wildmenu
 set ignorecase
+set smartcase
 set guioptions+=R
 set laststatus=2
 set completeopt=menuone,noinsert
@@ -34,6 +35,7 @@ set mouse=a
 set clipboard+=unnamed
 set splitbelow  " :termで最下部にターミナルを開く
 set termwinsize=16x0  " ターミナルのサイズを指定
+set showtabline=2 " 常にタブラインを表示
 syntax enable
 
 "" 文字化け対策
@@ -67,6 +69,9 @@ if has('syntax')
     augroup END
     call ZenkakuSpace()
 endif
+
+"" コメントアウト行後の改行時にコメントアウトを入れない
+autocmd FileType * setlocal formatoptions-=ro
 
 
 "" vim-plug
@@ -112,7 +117,10 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 " windowのリサイズ (<C-e>でリサイズモード, hjklでリサイズ)
 Plug 'simeji/winresizer'
-
+" ddでコピーしない、mmでコピーする
+Plug 'svermeulen/vim-easyclip'
+" カーソル位置の単語をハイライト
+Plug 'osyo-manga/vim-brightest'
 call plug#end()
 
 
@@ -123,6 +131,8 @@ nnoremap <Esc><Esc> :noh<CR>
 nnoremap <silent> <C-t> :bo term<CR>
 " jjでノーマルモードに切り替える
 inoremap <silent> jj <ESC>
+" 空行を挿入
+nnoremap <CR> o<ESC>zz
 
 
 "" NERDTree
@@ -138,14 +148,11 @@ let NERDTreeShowHidden = 1
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 
-"" タブの操作
-" https://qiita.com/wadako111/items/755e753677dd72d8036d
-" Anywhere SID.
+"" タブの操作 https://qiita.com/wadako111/items/755e753677dd72d8036d
 function! s:SID_PREFIX()
   return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeSID_PREFIX$')
 endfunction
 
-" Set tabline.
 function! s:my_tabline()  "{{{
   let s = ''
   for i in range(1, tabpagenr('$'))
@@ -165,13 +172,10 @@ function! s:my_tabline()  "{{{
   return s
 endfunction "}}}
 let &tabline = '%!'. s:SID_PREFIX() . 'my_tabline()'
-set showtabline=2 " 常にタブラインを表示
 
-" The prefix key.
 " t1 で1番左のタブ、t2 で1番左から2番目のタブにジャンプ
 nnoremap [Tag] <Nop>
 nmap t [Tag]
-" Tab jump
 for n in range(1, 9)
   execute 'nnoremap <silent> [Tag]'.n  ':<C-u>tabnext'.n.'<CR>'
 endfor
@@ -240,3 +244,46 @@ nnoremap <C-g> :Rg<CR>
 " :Ag ファイル名とマッチングさせない
 command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 3..'}, <bang>0)
 
+" カーソル位置の単語をRgでファイル検索
+nnoremap fr vawy:Rg <C-R>"<CR>
+" visualモードで選択した単語をRgでファイル検索
+xnoremap fr y:Rg <C-R>"<CR>
+
+" coc.nvim 以下のextentionが無ければインストールする
+let g:coc_global_extensions = [
+  \  'coc-lists'
+  \, 'coc-json'
+  \, 'coc-marketplace'
+  \, 'coc-html'
+  \, 'coc-css'
+  \, 'coc-tsserver'
+  \, 'coc-solargraph'
+  \, 'coc-python'
+  \, 'coc-snippets'
+  \, 'coc-vetur'
+  \ ]
+
+" カーソルの位置を復元する
+if has("autocmd")
+  augroup redhat
+    autocmd BufRead *.txt set tw=78
+    autocmd BufReadPost *
+    \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+    \   exe "normal! g'\"" |
+    \ endif
+    " git commitのカーソル位置は常に最初
+    autocmd VimEnter FIleType gitcommit normal! gg0
+    autocmd VimEnter COMMIT_EDITMSG  normal! gg0
+  augroup END
+endif
+
+" vimでファイルを開いたときに、tmuxのwindow名にファイル名を表示
+if exists('$TMUX') && !exists('$NORENAME')
+  au BufEnter * if empty(&buftype) | call system('tmux rename-window ""'.expand('%:t:S')) | endif
+  au VimLeave * call system('tmux set-window automatic-rename on')
+endif
+
+"" vim-brightest
+let g:brightest#highlight = {
+  \ "group" : "BrightestUnderline"
+  \}
