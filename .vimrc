@@ -273,3 +273,11 @@ let g:brightest#highlight = {
 "" ウィンドサイズを変更するモード
 let g:winresizer_start_key = '<C-q>'
 
+
+"" coc-nvim
+" ref: https://wonderwall.hatenablog.com/entry/2019/08/17/003000
+" 定義にジャンプ
+nmap <silent> gd <Plug>(coc-definition)
+" 参照一覧を表示
+nmap <silent> gr <Plug>(coc-references)
+
