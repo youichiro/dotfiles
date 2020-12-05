@@ -1,7 +1,18 @@
-"" Initial settings
-" git clone https://github.com/w0ng/vim-hybrid.git ~/.vim/bundle/vim-hybrid.git
-" ln -s ~/.vim/bundle/vim-hybrid.git/colors/hybrid.vim ~/.vim/colors/hybrid.vim
-" curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+""" Initial settings
+"" install vim-hybrid
+" $ git clone https://github.com/w0ng/vim-hybrid.git ~/.vim/bundle/vim-hybrid.git
+" $ ln -s ~/.vim/bundle/vim-hybrid.git/colors/hybrid.vim ~/.vim/colors/hybrid.vim
+
+"" install vim-plug
+" $ curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+"" install ripgrep
+" $ brew install ripgrep
+
+"" install nerd-fonts
+" $ brew tap homebrew/cask-fonts
+" $ brew cask install font-hack-nerd-font
+" change terminal font
 
 set background=dark
 colorscheme hybrid
@@ -47,8 +58,6 @@ syntax enable
 "" Tab visualization
 set list
 set listchars=tab:..,trail:-,extends:>,precedes:<,nbsp:%
-autocmd VimEnter,Colorscheme * highlight SpecialKey cterm=NONE ctermfg=244 ctermbg=NONE
-hi SpecialKey guibg=NONE guifg=gray
 
 "" indent
 augroup fileTypeIndent
@@ -74,13 +83,14 @@ endif
 autocmd FileType * setlocal formatoptions-=ro
 
 
+" 前回終了したカーソル行に移動
+autocmd bufreadpost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
+
+
 "" vim-plug
 call plug#begin('~/.vim/plugged')
 
-" filetreeを表示
-Plug 'scrooloose/nerdtree'
-" タブでもfiletreeを表示
-Plug 'jistr/vim-nerdtree-tabs'
+"" NERDTree
 " Ruby向けにendを自動挿入してくれる
 Plug 'tpope/vim-endwise'
 " コメントON/OFF(ctrl+-)
@@ -121,6 +131,19 @@ Plug 'simeji/winresizer'
 Plug 'svermeulen/vim-easyclip'
 " カーソル位置の単語をハイライト
 Plug 'osyo-manga/vim-brightest'
+" スクロールバー
+Plug 'obcat/vim-sclow'
+" fern.vim
+Plug 'lambdalisue/fern.vim'
+Plug 'lambdalisue/fern-git-status.vim'
+" fern.vimにアイコンをつける
+Plug 'ryanoasis/vim-devicons'
+Plug 'lambdalisue/nerdfont.vim'
+Plug 'lambdalisue/fern-renderer-nerdfont.vim'
+Plug 'lambdalisue/glyph-palette.vim'
+" fernツリーでff,fd,faで検索できる
+Plug 'LumaKernel/fern-mapping-fzf.vim'
+
 call plug#end()
 
 
@@ -133,61 +156,28 @@ nnoremap <silent> <C-t> :bo term<CR>
 inoremap <silent> jj <ESC>
 " 空行を挿入
 nnoremap <CR> o<ESC>zz
+" カーソル位置の単語をヤンク
+nnoremap yw vawy
+" タブ操作
+nnoremap tp :tabp<CR>
+nnoremap tn :tabn<CR>
+nnoremap tc :tabnew<CR>
+nnoremap tx :tabclose<CR>
+" :wのマップ
+nnoremap <C-s> <Esc>:w<CR>
 
 
-"" NERDTree
-" ctrl+nでNERDTreeを開く
-nnoremap <silent><C-n> :NERDTreeToggle<CR>
-" ctrl+cで現在のファイルをNERDTreeでフォーカスする
-nnoremap <silent><C-c> :NERDTreeFind<CR>
-" 隠しファイルを表示する
-let NERDTreeShowHidden = 1
-" デフォルトでツリーを表示させる
-" let g:nerdtree_tabs_open_on_console_startup=1
-" 他のバッファをすべて閉じた時にNERDTreeが開いていたらNERDTreeも一緒に閉じる。
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
-
-"" タブの操作 https://qiita.com/wadako111/items/755e753677dd72d8036d
-function! s:SID_PREFIX()
-  return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeSID_PREFIX$')
-endfunction
-
-function! s:my_tabline()  "{{{
-  let s = ''
-  for i in range(1, tabpagenr('$'))
-    let bufnrs = tabpagebuflist(i)
-    let bufnr = bufnrs[tabpagewinnr(i) - 1]  " first window, first appears
-    let no = i  " display 0-origin tabpagenr.
-    let mod = getbufvar(bufnr, '&modified') ? '!' : ' '
-    let title = fnamemodify(bufname(bufnr), ':t')
-    let title = '[' . title . ']'
-    let s .= '%'.i.'T'
-    let s .= '%#' . (i == tabpagenr() ? 'TabLineSel' : 'TabLine') . '#'
-    let s .= no . ':' . title
-    let s .= mod
-    let s .= '%#TabLineFill# '
-  endfor
-  let s .= '%#TabLineFill#%T%=%#TabLine#'
-  return s
-endfunction "}}}
-let &tabline = '%!'. s:SID_PREFIX() . 'my_tabline()'
-
-" t1 で1番左のタブ、t2 で1番左から2番目のタブにジャンプ
-nnoremap [Tag] <Nop>
-nmap t [Tag]
-for n in range(1, 9)
-  execute 'nnoremap <silent> [Tag]'.n  ':<C-u>tabnext'.n.'<CR>'
-endfor
-
-" tc 新しいタブを一番右に作る
-map <silent> [Tag]c :tablast <bar> tabnew<CR>
-" tx タブを閉じる
-map <silent> [Tag]x :tabclose<CR>
-" tn 次のタブ
-map <silent> [Tag]n :tabnext<CR>
-" tp 前のタブ
-map <silent> [Tag]p :tabprevious<CR>
+"" fern.vim
+" サイドバーでファイラーを開く
+nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=50<CR>
+" fern.vimにアイコンをつける
+let g:fern#renderer = "nerdfont"
+" fern.vimのアイコンに色をつける
+augroup my-glyph-palette
+  autocmd! *
+  autocmd FileType fern call glyph_palette#apply()
+  autocmd FileType nerdtree,startify call glyph_palette#apply()
+augroup END
 
 
 "" vim-markdown
@@ -211,6 +201,8 @@ let g:airline#extensions#default#layout = [
 	\ ['z']
 	\ ]
 let g:airline_section_z = get(g:, 'airline_linecolumn_prefix', '').'%3l:%-2v'
+" ファイル名のみタブに表示する
+let g:airline#extensions#tabline#fnamemod = ':t'
 
 
 "" fzf.vim
@@ -249,7 +241,8 @@ nnoremap fr vawy:Rg <C-R>"<CR>
 " visualモードで選択した単語をRgでファイル検索
 xnoremap fr y:Rg <C-R>"<CR>
 
-" coc.nvim 以下のextentionが無ければインストールする
+
+"" coc.nvim 以下のextentionが無ければインストールする
 let g:coc_global_extensions = [
   \  'coc-lists'
   \, 'coc-json'
@@ -263,19 +256,6 @@ let g:coc_global_extensions = [
   \, 'coc-vetur'
   \ ]
 
-" カーソルの位置を復元する
-if has("autocmd")
-  augroup redhat
-    autocmd BufRead *.txt set tw=78
-    autocmd BufReadPost *
-    \ if line("'\"") > 0 && line ("'\"") <= line("$") |
-    \   exe "normal! g'\"" |
-    \ endif
-    " git commitのカーソル位置は常に最初
-    autocmd VimEnter FIleType gitcommit normal! gg0
-    autocmd VimEnter COMMIT_EDITMSG  normal! gg0
-  augroup END
-endif
 
 " vimでファイルを開いたときに、tmuxのwindow名にファイル名を表示
 if exists('$TMUX') && !exists('$NORENAME')
@@ -283,7 +263,13 @@ if exists('$TMUX') && !exists('$NORENAME')
   au VimLeave * call system('tmux set-window automatic-rename on')
 endif
 
-"" vim-brightest
+
+"" カーソル位置の単語をアンダーラインでハイライトする
 let g:brightest#highlight = {
   \ "group" : "BrightestUnderline"
   \}
+
+
+"" ウィンドサイズを変更するモード
+let g:winresizer_start_key = '<C-q>'
+
