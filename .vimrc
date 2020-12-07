@@ -1,7 +1,10 @@
 """ Initial settings
-"" install vim-hybrid
+"" download colorscheme vim-hybrid
 " $ git clone https://github.com/w0ng/vim-hybrid.git ~/.vim/bundle/vim-hybrid.git
 " $ ln -s ~/.vim/bundle/vim-hybrid.git/colors/hybrid.vim ~/.vim/colors/hybrid.vim
+"" download colorscheme codedark
+" $ git clone https://github.com/tomasiser/vim-code-dark.git ~/.vim/bundle/vim-code-dark.git
+" $ ln -s ~/.vim/bundle/vim-code-dark.git/colors/codedark.vim ~/.vim/colors/codedark.vim
 
 "" install vim-plug
 " $ curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -15,7 +18,8 @@
 " change terminal font
 
 set background=dark
-colorscheme hybrid
+" colorscheme hybrid
+colorscheme codedark
 
 set shell=$SHELL
 set number
@@ -87,6 +91,50 @@ autocmd FileType * setlocal formatoptions-=ro
 autocmd bufreadpost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
 
 
+"" 共通キーマップ
+" iTerm2のキー設定を利用してShift+?を拾う
+map π <S-CR>
+map ˚ <S-Up>
+map Ô <S-Down>
+
+
+"" キーマップ
+" ハイライトを解除する
+nnoremap <Esc><Esc> :noh<CR>
+" ctrl+tでターミナルを開く
+nnoremap <silent> <C-t> :bo term<CR>
+" jjでノーマルモードに切り替える
+inoremap <silent> jj <ESC>
+" カーソル位置の単語をヤンク
+nnoremap yw vawy
+" タブ操作
+nnoremap tp :tabp<CR>
+nnoremap tn :tabn<CR>
+nnoremap tc :tabnew<CR>
+nnoremap tx :tabclose<CR>
+" :wのマップ
+nnoremap <C-s> <Esc>:w<CR>
+" コピーしない
+nnoremap x "_x
+nnoremap d "_d
+nnoremap D "_D
+nnoremap s "_s
+" 単語検索マップ
+nnoremap <Space><Space> *N
+
+" ref: https://qiita.com/itmammoth/items/312246b4b7688875d023
+" 下に空行を挿入
+nnoremap <CR> mzo<ESC>`z
+" 上に改行を挿入
+nnoremap <S-CR> mzO<ESC>`z
+" 行を移動
+nnoremap <S-Up> "zdd<Up>"zP
+nnoremap <S-Down> "zdd"zp
+" 複数行を移動
+vnoremap <S-Up> "zx<Up>"zP`[V`]
+vnoremap <S-Down> "zx"zp`[V`]
+
+
 "" vim-plug
 call plug#begin('~/.vim/plugged')
 
@@ -108,6 +156,7 @@ Plug 'tpope/vim-fugitive'
 " status-bar
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'tomasiser/vim-code-dark'
 " 補完
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " HTMLの閉じカッコ補完
@@ -118,17 +167,16 @@ Plug 'othree/yajs.vim'
 Plug 'mattn/vim-lexiv'
 " vue
 Plug 'posva/vim-vue'
-" markdown
-Plug 'plasticboy/vim-markdown'
-" markdown preview (:Minidownでブラウザが起動する)
-Plug 'iwataka/minidown.vim'
+" markdown syntax highlight
+Plug 'tpope/vim-markdown'
+" markdown preview (:PrevimOpenでブラウザが起動する)
+Plug 'previm/previm'
+Plug 'tyru/open-browser.vim'
 " fzf
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 " windowのリサイズ (<C-e>でリサイズモード, hjklでリサイズ)
 Plug 'simeji/winresizer'
-" ddでコピーしない、mmでコピーする
-Plug 'svermeulen/vim-easyclip'
 " カーソル位置の単語をハイライト
 Plug 'osyo-manga/vim-brightest'
 " スクロールバー
@@ -143,33 +191,15 @@ Plug 'lambdalisue/fern-renderer-nerdfont.vim'
 Plug 'lambdalisue/glyph-palette.vim'
 " fernツリーでff,fd,faで検索できる
 Plug 'LumaKernel/fern-mapping-fzf.vim'
+" svelte
+Plug 'evanleck/vim-svelte', {'branch': 'main'}
 
 call plug#end()
 
 
-"" キーマップ
-" ハイライトを解除する
-nnoremap <Esc><Esc> :noh<CR>
-" ctrl+tでターミナルを開く
-nnoremap <silent> <C-t> :bo term<CR>
-" jjでノーマルモードに切り替える
-inoremap <silent> jj <ESC>
-" 空行を挿入
-nnoremap <CR> o<ESC>zz
-" カーソル位置の単語をヤンク
-nnoremap yw vawy
-" タブ操作
-nnoremap tp :tabp<CR>
-nnoremap tn :tabn<CR>
-nnoremap tc :tabnew<CR>
-nnoremap tx :tabclose<CR>
-" :wのマップ
-nnoremap <C-s> <Esc>:w<CR>
-
-
 "" fern.vim
 " サイドバーでファイラーを開く
-nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=50<CR>
+nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 " fern.vimにアイコンをつける
 let g:fern#renderer = "nerdfont"
 " fern.vimのアイコンに色をつける
@@ -188,7 +218,8 @@ let g:vim_markdown_new_list_item_indent = 0
 
 "" vim-airline
 " テーマ
-let g:airline_theme = 'hybrid'
+" let g:airline_theme = 'hybrid'
+let g:airline_theme = 'codedark'
 " tab line有効化
 let g:airline#extensions#tabline#enabled = 1
 " (タブが一個の場合) バッファのリストをタブラインに表示する機能をオフ
@@ -254,6 +285,7 @@ let g:coc_global_extensions = [
   \, 'coc-python'
   \, 'coc-snippets'
   \, 'coc-vetur'
+  \, 'coc-svelte'
   \ ]
 
 
