@@ -51,6 +51,7 @@ set clipboard+=unnamed
 set splitbelow  " :termで最下部にターミナルを開く
 set termwinsize=16x0  " ターミナルのサイズを指定
 set showtabline=2 " 常にタブラインを表示
+set updatetime=250 " 反映時間を短くする(デフォルトは4000ms)
 syntax enable
 
 "" 文字化け対策
@@ -87,8 +88,19 @@ endif
 autocmd FileType * setlocal formatoptions-=ro
 
 
-" 前回終了したカーソル行に移動
-autocmd bufreadpost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
+"" Vim終了時に現在のセッションを保存する
+" au VimLeave * mks!  ~/vimsession
+
+"" 引数なし起動の時、前回のsessionを復元
+" autocmd VimEnter * nested if @% == '' && s:GetBufByte() == 0 | source ~/vimsession | endif
+" function! s:GetBufByte()
+"     let byte = line2byte(line('$') + 1)
+"     if byte == -1
+"         return 0
+"     else
+"         return byte - 1
+"     endif
+" endfunction
 
 
 "" 共通キーマップ
@@ -119,6 +131,7 @@ nnoremap x "_x
 nnoremap d "_d
 nnoremap D "_D
 nnoremap s "_s
+nnoremap c "_c
 " 単語検索マップ
 nnoremap <Space><Space> *N
 
@@ -149,10 +162,12 @@ Plug 'bronson/vim-trailing-whitespace'
 Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
-" gitの差分を表示(:Gstatus)
+" gitの差分を表示
 Plug 'airblade/vim-gitgutter'
 " git操作
 Plug 'tpope/vim-fugitive'
+" githubを開く
+Plug 'tpope/vim-rhubarb'
 " status-bar
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -189,8 +204,6 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'lambdalisue/nerdfont.vim'
 Plug 'lambdalisue/fern-renderer-nerdfont.vim'
 Plug 'lambdalisue/glyph-palette.vim'
-" fernツリーでff,fd,faで検索できる
-Plug 'LumaKernel/fern-mapping-fzf.vim'
 " svelte
 Plug 'evanleck/vim-svelte', {'branch': 'main'}
 
@@ -222,18 +235,29 @@ let g:vim_markdown_new_list_item_indent = 0
 let g:airline_theme = 'codedark'
 " tab line有効化
 let g:airline#extensions#tabline#enabled = 1
-" (タブが一個の場合) バッファのリストをタブラインに表示する機能をオフ
-let g:airline#extensions#tabline#show_buffers = 0
 " 0でそのタブで開いてるウィンドウ数、1で左のタブから連番
 let g:airline#extensions#tabline#tab_nr_type = 1
 " ステータスバーに表示する項目
 let g:airline#extensions#default#layout = [
-	\ [ 'a', 'b', 'c' ],
-	\ ['z']
-	\ ]
+  \ [ 'a', 'b', 'c' ],
+  \ ['z']
+  \ ]
+let g:airline_section_c = '%t %M'
 let g:airline_section_z = get(g:, 'airline_linecolumn_prefix', '').'%3l:%-2v'
 " ファイル名のみタブに表示する
 let g:airline#extensions#tabline#fnamemod = ':t'
+" 変更がなければdiffの行数を表示しない
+let g:airline#extensions#hunks#non_zero_only = 1
+" powerlineを使う
+let g:airline_powerline_fonts = 1
+" タブライン
+let g:airline#extensions#tabline#show_buffers = 1 " enable/disable displaying buffers with a single tab
+let g:airline#extensions#tabline#show_splits = 0 "enable/disable displaying open splits per tab
+let g:airline#extensions#tabline#show_tabs = 1
+let g:airline#extensions#tabline#show_tab_nr = 0 " tab number
+let g:airline#extensions#tabline#show_tab_type = 1  " bufferかtabかを表示する
+let g:airline#extensions#tabline#close_symbol = '×'
+let g:airline#extensions#tabline#show_close_button = 0
 
 
 "" fzf.vim
@@ -312,4 +336,24 @@ let g:winresizer_start_key = '<C-q>'
 nmap <silent> gd <Plug>(coc-definition)
 " 参照一覧を表示
 nmap <silent> gr <Plug>(coc-references)
+
+"" git操作
+" ref: https://wonderwall.hatenablog.com/entry/2016/03/26/211710
+" 前の変更箇所へ移動
+nnoremap g[ :GitGutterPrevHunk<CR>
+" 次の変更箇所へ移動
+nnoremap g] :GitGutterNextHunk<CR>
+" diffを表示
+nnoremap gd :Gdiff<CR>
+" diffをハイライトする
+nnoremap gh :GitGutterLineHighlightsToggle<CR>
+" カーソル行のdiffを表示
+nnoremap gp :GitGutterPreviewHunk<CR>
+" 記号の色を変更
+highlight GitGutterAdd ctermfg=green
+highlight GitGutterChange ctermfg=blue
+highlight GitGutterDelete ctermfg=red
+" ブラウザで該当のファイルを開く
+nnoremap gb :Gbrowse<CR>
+vnoremap gb :Gbrowse<CR>
 
