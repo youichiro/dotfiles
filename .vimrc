@@ -340,9 +340,9 @@ nmap <silent> gr <Plug>(coc-references)
 "" git操作
 " ref: https://wonderwall.hatenablog.com/entry/2016/03/26/211710
 " 前の変更箇所へ移動
-nnoremap g[ :GitGutterPrevHunk<CR>
+nnoremap gp :GitGutterPrevHunk<CR>
 " 次の変更箇所へ移動
-nnoremap g] :GitGutterNextHunk<CR>
+nnoremap gn :GitGutterNextHunk<CR>
 " diffを表示
 nnoremap gd :Gdiff<CR>
 " diffをハイライトする
