@@ -12,15 +12,16 @@
 "" install ripgrep
 " $ brew install ripgrep
 
-"" install nerd-fonts
-" $ brew tap homebrew/cask-fonts
-" $ brew cask install font-hack-nerd-font
+"" install Menlo Nerd Font
+" download and install -> https://github.com/yumitsu/font-menlo-extra/blob/master/Menlo-Regular-Normal.ttf
 " change terminal font
 
+"" テーマ
 set background=dark
 " colorscheme hybrid
 colorscheme codedark
 
+"" options
 set shell=$SHELL
 set number
 set smarttab
@@ -54,53 +55,49 @@ set showtabline=2 " 常にタブラインを表示
 set updatetime=250 " 反映時間を短くする(デフォルトは4000ms)
 syntax enable
 
-"" 文字化け対策
+" 文字化け対策
 set encoding=utf-8
 set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8
 set fileformats=unix,dos,mac
-syntax enable
 
-"" Tab visualization
+" Tab visualization
 set list
 set listchars=tab:..,trail:-,extends:>,precedes:<,nbsp:%
 
-"" indent
+" 全角スペースの表示
+function! ZenkakuSpace()
+    highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
+endfunction
+
+
+"" autocmd
+" pythonの場合はインデントを4に設定する
 augroup fileTypeIndent
   autocmd!
   autocmd BufNewFile,BufRead *.py setlocal tabstop=4 shiftwidth=4
 augroup END
 
-"" 全角スペースの表示
-function! ZenkakuSpace()
-    highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
-endfunction
-
 if has('syntax')
-    augroup ZenkakuSpace
-        autocmd!
-        autocmd ColorScheme * call ZenkakuSpace()
-        autocmd VimEnter,WinEnter,BufRead * let w:m1=matchadd('ZenkakuSpace', '　')
-    augroup END
-    call ZenkakuSpace()
+  augroup ZenkakuSpace
+    autocmd!
+    autocmd ColorScheme * call ZenkakuSpace()
+    autocmd VimEnter,WinEnter,BufRead * let w:m1=matchadd('ZenkakuSpace', '　')
+  augroup END
+  call ZenkakuSpace()
 endif
 
-"" コメントアウト行後の改行時にコメントアウトを入れない
-autocmd FileType * setlocal formatoptions-=ro
+" 最後のカーソル位置に移動する
+augroup vimrcEx
+  autocmd!
+  autocmd BufRead * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
+augroup END
 
-
-"" Vim終了時に現在のセッションを保存する
-" au VimLeave * mks!  ~/vimsession
-
-"" 引数なし起動の時、前回のsessionを復元
-" autocmd VimEnter * nested if @% == '' && s:GetBufByte() == 0 | source ~/vimsession | endif
-" function! s:GetBufByte()
-"     let byte = line2byte(line('$') + 1)
-"     if byte == -1
-"         return 0
-"     else
-"         return byte - 1
-"     endif
-" endfunction
+" 自動コメントアウト無効
+augroup auto_comment_off
+  autocmd!
+  autocmd BufEnter * setlocal formatoptions-=r
+  autocmd BufEnter * setlocal formatoptions-=o
+augroup END
 
 
 "" 共通キーマップ
@@ -119,6 +116,7 @@ nnoremap <silent> <C-t> :bo term<CR>
 inoremap <silent> jj <ESC>
 " カーソル位置の単語をヤンク
 nnoremap yw vawy
+
 " タブ操作
 nnoremap tp :tabp<CR>
 nnoremap tn :tabn<CR>
@@ -132,6 +130,7 @@ nnoremap d "_d
 nnoremap D "_D
 nnoremap s "_s
 nnoremap c "_c
+
 " 単語検索マップ
 nnoremap <Space><Space> *N
 
@@ -187,10 +186,12 @@ Plug 'tpope/vim-markdown'
 " markdown preview (:PrevimOpenでブラウザが起動する)
 Plug 'previm/previm'
 Plug 'tyru/open-browser.vim'
+" tableを簡単に書く(:TableModeToggle)
+Plug 'dhruvasagar/vim-table-mode'
 " fzf
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-" windowのリサイズ (<C-e>でリサイズモード, hjklでリサイズ)
+" windowのリサイズ (<C-q>でリサイズモード)
 Plug 'simeji/winresizer'
 " カーソル位置の単語をハイライト
 Plug 'osyo-manga/vim-brightest'
@@ -206,6 +207,8 @@ Plug 'lambdalisue/fern-renderer-nerdfont.vim'
 Plug 'lambdalisue/glyph-palette.vim'
 " svelte
 Plug 'evanleck/vim-svelte', {'branch': 'main'}
+" エディタのみ表示する(:Goyo)
+Plug 'junegunn/goyo.vim'
 
 call plug#end()
 
@@ -213,14 +216,14 @@ call plug#end()
 "" fern.vim
 " サイドバーでファイラーを開く
 nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
-" fern.vimにアイコンをつける
-let g:fern#renderer = "nerdfont"
-" fern.vimのアイコンに色をつける
-augroup my-glyph-palette
-  autocmd! *
-  autocmd FileType fern call glyph_palette#apply()
-  autocmd FileType nerdtree,startify call glyph_palette#apply()
-augroup END
+" " fern.vimにアイコンをつける
+" let g:fern#renderer = "nerdfont"
+" " fern.vimのアイコンに色をつける
+" augroup my-glyph-palette
+"   autocmd! *
+"   autocmd FileType fern call glyph_palette#apply()
+"   autocmd FileType nerdtree,startify call glyph_palette#apply()
+" augroup END
 
 
 "" vim-markdown
@@ -235,8 +238,6 @@ let g:vim_markdown_new_list_item_indent = 0
 let g:airline_theme = 'codedark'
 " tab line有効化
 let g:airline#extensions#tabline#enabled = 1
-" 0でそのタブで開いてるウィンドウ数、1で左のタブから連番
-let g:airline#extensions#tabline#tab_nr_type = 1
 " ステータスバーに表示する項目
 let g:airline#extensions#default#layout = [
   \ [ 'a', 'b', 'c' ],
@@ -356,4 +357,9 @@ highlight GitGutterDelete ctermfg=red
 " ブラウザで該当のファイルを開く
 nnoremap gb :Gbrowse<CR>
 vnoremap gb :Gbrowse<CR>
+
+
+"" vim-table-mode
+" markdownの表にする
+let g:table_mode_corner = '|'
 
