@@ -116,7 +116,6 @@ nnoremap <silent> <C-t> :bo term<CR>
 inoremap <silent> jj <ESC>
 " カーソル位置の単語をヤンク
 nnoremap yw vawy
-
 " タブ操作
 nnoremap tp :tabp<CR>
 nnoremap tn :tabn<CR>
@@ -130,7 +129,8 @@ nnoremap d "_d
 nnoremap D "_D
 nnoremap s "_s
 nnoremap c "_c
-
+" 選択箇所をヤンクして削除
+vnoremap yx ygvx
 " 単語検索マップ
 nnoremap <Space><Space> *N
 
@@ -150,7 +150,6 @@ vnoremap <S-Down> "zx"zp`[V`]
 "" vim-plug
 call plug#begin('~/.vim/plugged')
 
-"" NERDTree
 " Ruby向けにendを自動挿入してくれる
 Plug 'tpope/vim-endwise'
 " コメントON/OFF(ctrl+-)
@@ -238,20 +237,20 @@ let g:vim_markdown_new_list_item_indent = 0
 let g:airline_theme = 'codedark'
 " tab line有効化
 let g:airline#extensions#tabline#enabled = 1
-" ステータスバーに表示する項目
+" ステータスバーに表示する項目を変更する
 let g:airline#extensions#default#layout = [
   \ [ 'a', 'b', 'c' ],
   \ ['z']
   \ ]
 let g:airline_section_c = '%t %M'
 let g:airline_section_z = get(g:, 'airline_linecolumn_prefix', '').'%3l:%-2v'
-" ファイル名のみタブに表示する
-let g:airline#extensions#tabline#fnamemod = ':t'
 " 変更がなければdiffの行数を表示しない
 let g:airline#extensions#hunks#non_zero_only = 1
 " powerlineを使う
 let g:airline_powerline_fonts = 1
-" タブライン
+" タブラインの表示を変更する
+" ref:https://www.reddit.com/r/vim/comments/crs61u/best_airline_settings/
+let g:airline#extensions#tabline#fnamemod = ':t' " ファイル名のみタブに表示する
 let g:airline#extensions#tabline#show_buffers = 1 " enable/disable displaying buffers with a single tab
 let g:airline#extensions#tabline#show_splits = 0 "enable/disable displaying open splits per tab
 let g:airline#extensions#tabline#show_tabs = 1
@@ -275,7 +274,7 @@ fun! FzfOmniFiles()
   if v:shell_error
     :Files
   else
-    :GitFiles
+    :GFiles
   endif
 endfun
 nnoremap <C-p> :call FzfOmniFiles()<CR>
@@ -288,9 +287,6 @@ command! -bang -nargs=* Rg
 \ : fzf#vim#with_preview({'options': '--exact --delimiter : --nth 3..'}, 'right:50%:hidden', '?'),
 \ <bang>0)
 nnoremap <C-g> :Rg<CR>
-
-" :Ag ファイル名とマッチングさせない
-command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 3..'}, <bang>0)
 
 " カーソル位置の単語をRgでファイル検索
 nnoremap fr vawy:Rg <C-R>"<CR>
@@ -341,9 +337,9 @@ nmap <silent> gr <Plug>(coc-references)
 "" git操作
 " ref: https://wonderwall.hatenablog.com/entry/2016/03/26/211710
 " 前の変更箇所へ移動
-nnoremap gp :GitGutterPrevHunk<CR>
+nnoremap g] :GitGutterPrevHunk<CR>
 " 次の変更箇所へ移動
-nnoremap gn :GitGutterNextHunk<CR>
+nnoremap g[ :GitGutterNextHunk<CR>
 " diffを表示
 nnoremap gd :Gdiff<CR>
 " diffをハイライトする
