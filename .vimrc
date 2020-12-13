@@ -16,8 +16,11 @@
 " download and install -> https://github.com/yumitsu/font-menlo-extra/blob/master/Menlo-Regular-Normal.ttf
 " change terminal font
 
+"" install ctag for tagbar
+" $ brew install ctags
+
 "" テーマ
-set background=dark
+" set background=dark
 " colorscheme hybrid
 colorscheme codedark
 
@@ -53,6 +56,9 @@ set splitbelow  " :termで最下部にターミナルを開く
 set termwinsize=16x0  " ターミナルのサイズを指定
 set showtabline=2 " 常にタブラインを表示
 set updatetime=250 " 反映時間を短くする(デフォルトは4000ms)
+set scrolloff=20
+set noshowmode
+set pumheight=10 " 補完のポップアップメニューを10行までにする
 syntax enable
 
 " 文字化け対策
@@ -66,7 +72,7 @@ set listchars=tab:..,trail:-,extends:>,precedes:<,nbsp:%
 
 " 全角スペースの表示
 function! ZenkakuSpace()
-    highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
+  highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
 endfunction
 
 
@@ -117,12 +123,10 @@ inoremap <silent> jj <ESC>
 " カーソル位置の単語をヤンク
 nnoremap yw vawy
 " タブ操作
-nnoremap tp :tabp<CR>
 nnoremap tn :tabn<CR>
+nnoremap tp :tabp<CR>
 nnoremap tc :tabnew<CR>
 nnoremap tx :tabclose<CR>
-" :wのマップ
-nnoremap <C-s> <Esc>:w<CR>
 " コピーしない
 nnoremap x "_x
 nnoremap d "_d
@@ -133,12 +137,17 @@ nnoremap c "_c
 vnoremap yx ygvx
 " 単語検索マップ
 nnoremap <Space><Space> *N
+" カーソル位置以降をヤンクする
+nnoremap Y y$
+" ウィンドウ分割
+nnoremap <C-s><C-s> :split<CR>
+nnoremap <C-s><C-v> :vsplit<CR><C-w>w
+" 下に空行を挿入して移動
+nnoremap <CR> o<ESC>
+" 上に改行を挿入して移動
+nnoremap <S-CR> O<ESC>
 
 " ref: https://qiita.com/itmammoth/items/312246b4b7688875d023
-" 下に空行を挿入
-nnoremap <CR> mzo<ESC>`z
-" 上に改行を挿入
-nnoremap <S-CR> mzO<ESC>`z
 " 行を移動
 nnoremap <S-Up> "zdd<Up>"zP
 nnoremap <S-Down> "zdd"zp
@@ -199,6 +208,7 @@ Plug 'obcat/vim-sclow'
 " fern.vim
 Plug 'lambdalisue/fern.vim'
 Plug 'lambdalisue/fern-git-status.vim'
+Plug 'LumaKernel/fern-mapping-fzf.vim'
 " fern.vimにアイコンをつける
 Plug 'ryanoasis/vim-devicons'
 Plug 'lambdalisue/nerdfont.vim'
@@ -208,13 +218,23 @@ Plug 'lambdalisue/glyph-palette.vim'
 Plug 'evanleck/vim-svelte', {'branch': 'main'}
 " エディタのみ表示する(:Goyo)
 Plug 'junegunn/goyo.vim'
+" インデントラインを表示する
+Plug 'Yggdroot/indentLine'
+" 関数をアウトラインで表示する
+Plug 'majutsushi/tagbar'
+" 日本語の単語単位で移動する
+Plug 'deton/jasegment.vim'
 
 call plug#end()
 
 
 "" fern.vim
-" サイドバーでファイラーを開く
-nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
+" サイドバーで開く
+nnoremap <Space>n :Fern . -reveal=% -drawer -toggle -width=40<CR>
+" 新規タブで開く
+nnoremap <Space>m :Fern . -reveal=% -opener=tabedit<CR>
+" 現在のバッファで開く
+nnoremap <Space>b :Fern . -reveal=% -opener=edit<CR>
 " " fern.vimにアイコンをつける
 " let g:fern#renderer = "nerdfont"
 " " fern.vimのアイコンに色をつける
@@ -262,10 +282,10 @@ let g:airline#extensions#tabline#show_close_button = 0
 
 "" fzf.vim
 nnoremap fb :Buffers<CR>
+nnoremap fp :Buffers<CR><CR>
 nnoremap fl :BLines<CR>
 nnoremap fm :Marks<CR>
 nnoremap fh :History<CR>
-nnoremap fp :History<CR><CR>
 nnoremap fc :Commits<CR>
 
 " :Files
@@ -337,9 +357,9 @@ nmap <silent> gr <Plug>(coc-references)
 "" git操作
 " ref: https://wonderwall.hatenablog.com/entry/2016/03/26/211710
 " 前の変更箇所へ移動
-nnoremap g] :GitGutterPrevHunk<CR>
+nnoremap g[ :GitGutterPrevHunk<CR>
 " 次の変更箇所へ移動
-nnoremap g[ :GitGutterNextHunk<CR>
+nnoremap g] :GitGutterNextHunk<CR>
 " diffを表示
 nnoremap gd :Gdiff<CR>
 " diffをハイライトする
@@ -358,4 +378,10 @@ vnoremap gb :Gbrowse<CR>
 "" vim-table-mode
 " markdownの表にする
 let g:table_mode_corner = '|'
+
+"" tagbar
+nnoremap tb :TagbarOpenAutoClose<CR>
+
+"" indentLine
+let g:indentLine_char = '│'
 
