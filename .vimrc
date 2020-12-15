@@ -34,10 +34,10 @@ set shiftwidth=2
 set autoindent
 set smartindent
 set backspace=indent,eol,start
-set title
-set ruler
+" set title
+" set ruler
 set incsearch
-set cursorline
+" set cursorline
 set showmatch
 set showcmd
 set wrapscan
@@ -56,7 +56,7 @@ set splitbelow  " :termで最下部にターミナルを開く
 set termwinsize=16x0  " ターミナルのサイズを指定
 set showtabline=2 " 常にタブラインを表示
 set updatetime=250 " 反映時間を短くする(デフォルトは4000ms)
-set scrolloff=20
+set scrolloff=20  " スクロールしたときにこの数だけ行数を残す
 set noshowmode
 set pumheight=10 " 補完のポップアップメニューを10行までにする
 syntax enable
@@ -155,6 +155,16 @@ nnoremap <S-Down> "zdd"zp
 vnoremap <S-Up> "zx<Up>"zP`[V`]
 vnoremap <S-Down> "zx"zp`[V`]
 
+" バッファが2つ以上ある場合はvimを終了しない
+fun! Quit()
+  if len(getbufinfo({'buflisted':1})) > 1
+    :bd
+  else
+    :q
+  endif
+endfun
+nnoremap :q :call Quit()
+
 
 "" vim-plug
 call plug#begin('~/.vim/plugged')
@@ -229,12 +239,21 @@ call plug#end()
 
 
 "" fern.vim
-" サイドバーで開く
-nnoremap <Space>n :Fern . -reveal=% -drawer -toggle -width=40<CR>
+
+fun! OpenFern()
+  if empty(@%)
+    :Fern . -reveal=% -opener=edit
+  else
+    :Fern . -reveal=% -opener=tabedit
+  endif
+endfun
+
 " 新規タブで開く
-nnoremap <Space>m :Fern . -reveal=% -opener=tabedit<CR>
+nnoremap <C-n><C-n> :call OpenFern()<CR>
+" サイドバーで開く
+nnoremap <C-n><C-m> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 " 現在のバッファで開く
-nnoremap <Space>b :Fern . -reveal=% -opener=edit<CR>
+nnoremap <C-n><C-b> :Fern . -reveal=% -opener=edit<CR>
 " " fern.vimにアイコンをつける
 " let g:fern#renderer = "nerdfont"
 " " fern.vimのアイコンに色をつける
