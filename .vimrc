@@ -37,9 +37,10 @@ set backspace=indent,eol,start
 " set title
 " set ruler
 set incsearch
-" set cursorline
+set cursorline
 set showmatch
 set showcmd
+set wrap
 set wrapscan
 set hlsearch
 set virtualedit=block
@@ -59,21 +60,17 @@ set updatetime=250 " 反映時間を短くする(デフォルトは4000ms)
 set scrolloff=20  " スクロールしたときにこの数だけ行数を残す
 set noshowmode
 set pumheight=10 " 補完のポップアップメニューを10行までにする
+set shortmess+=F " コマンドラインにファイル名を表示しない
 syntax enable
 
 " 文字化け対策
 set encoding=utf-8
-set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8
+set fileencodings=utf-8
 set fileformats=unix,dos,mac
 
 " Tab visualization
 set list
 set listchars=tab:..,trail:-,extends:>,precedes:<,nbsp:%
-
-" 全角スペースの表示
-function! ZenkakuSpace()
-  highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
-endfunction
 
 
 "" autocmd
@@ -82,6 +79,11 @@ augroup fileTypeIndent
   autocmd!
   autocmd BufNewFile,BufRead *.py setlocal tabstop=4 shiftwidth=4
 augroup END
+
+" 全角スペースの表示
+function! ZenkakuSpace()
+  highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
+endfunction
 
 if has('syntax')
   augroup ZenkakuSpace
@@ -123,6 +125,8 @@ inoremap <silent> jj <ESC>
 " カーソル位置の単語をヤンク
 nnoremap yw vawy
 " タブ操作
+" nnoremap <Tab> :tabn<CR>
+" nnoremap <S-Tab> :tabp<CR>
 nnoremap tn :tabn<CR>
 nnoremap tp :tabp<CR>
 nnoremap tc :tabnew<CR>
@@ -156,14 +160,21 @@ vnoremap <S-Up> "zx<Up>"zP`[V`]
 vnoremap <S-Down> "zx"zp`[V`]
 
 " バッファが2つ以上ある場合はvimを終了しない
-fun! Quit()
-  if len(getbufinfo({'buflisted':1})) > 1
-    :bd
-  else
-    :q
-  endif
-endfun
-nnoremap :q :call Quit()
+" fun! Quit()
+"   if len(getbufinfo({'buflisted':1})) > 1
+"     bd
+"   else
+"     q
+"   endif
+" endfun
+" nnoremap :q :call Quit()
+
+" buffer
+nnoremap bp :bp<CR>
+nnoremap bn :bn<CR>
+
+" 行連結したときのスペースを削除する
+nnoremap J Jx
 
 
 "" vim-plug
@@ -176,9 +187,9 @@ Plug 'tomtom/tcomment_vim'
 " 行末の半角スペースを可視化
 Plug 'bronson/vim-trailing-whitespace'
 " vim-lsp
-Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/vim-lsp'
-Plug 'mattn/vim-lsp-settings'
+" Plug 'prabirshrestha/async.vim'
+" Plug 'prabirshrestha/vim-lsp'
+" Plug 'mattn/vim-lsp-settings'
 " gitの差分を表示
 Plug 'airblade/vim-gitgutter'
 " git操作
@@ -214,7 +225,7 @@ Plug 'simeji/winresizer'
 " カーソル位置の単語をハイライト
 Plug 'osyo-manga/vim-brightest'
 " スクロールバー
-Plug 'obcat/vim-sclow'
+" Plug 'obcat/vim-sclow'
 " fern.vim
 Plug 'lambdalisue/fern.vim'
 Plug 'lambdalisue/fern-git-status.vim'
@@ -234,6 +245,10 @@ Plug 'Yggdroot/indentLine'
 Plug 'majutsushi/tagbar'
 " 日本語の単語単位で移動する
 Plug 'deton/jasegment.vim'
+" prettier
+Plug 'prettier/vim-prettier', {
+  \ 'do': 'yarn install',
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
 
 call plug#end()
 
@@ -272,8 +287,8 @@ let g:vim_markdown_new_list_item_indent = 0
 
 "" vim-airline
 " テーマ
-" let g:airline_theme = 'hybrid'
-let g:airline_theme = 'codedark'
+let g:airline_theme = 'hybrid'
+" let g:airline_theme = 'codedark'
 " tab line有効化
 let g:airline#extensions#tabline#enabled = 1
 " ステータスバーに表示する項目を変更する
@@ -283,6 +298,7 @@ let g:airline#extensions#default#layout = [
   \ ]
 let g:airline_section_c = '%t %M'
 let g:airline_section_z = get(g:, 'airline_linecolumn_prefix', '').'%3l:%-2v'
+let g:airline#extensions#wordcount#enabled = 0 " word countを表示しない
 " 変更がなければdiffの行数を表示しない
 let g:airline#extensions#hunks#non_zero_only = 1
 " powerlineを使う
@@ -349,13 +365,6 @@ let g:coc_global_extensions = [
   \ ]
 
 
-" vimでファイルを開いたときに、tmuxのwindow名にファイル名を表示
-if exists('$TMUX') && !exists('$NORENAME')
-  au BufEnter * if empty(&buftype) | call system('tmux rename-window ""'.expand('%:t:S')) | endif
-  au VimLeave * call system('tmux set-window automatic-rename on')
-endif
-
-
 "" カーソル位置の単語をアンダーラインでハイライトする
 let g:brightest#highlight = {
   \ "group" : "BrightestUnderline"
@@ -379,8 +388,6 @@ nmap <silent> gr <Plug>(coc-references)
 nnoremap g[ :GitGutterPrevHunk<CR>
 " 次の変更箇所へ移動
 nnoremap g] :GitGutterNextHunk<CR>
-" diffを表示
-nnoremap gd :Gdiff<CR>
 " diffをハイライトする
 nnoremap gh :GitGutterLineHighlightsToggle<CR>
 " カーソル行のdiffを表示
@@ -398,9 +405,21 @@ vnoremap gb :Gbrowse<CR>
 " markdownの表にする
 let g:table_mode_corner = '|'
 
+
+"" previm
+" GitHubプレビューの見た目にする
+let g:previm_disable_default_css = 1
+let g:previm_custom_css_path = '~/dotfiles/vim/previm/markdown.css'
+
+
 "" tagbar
 nnoremap tb :TagbarOpenAutoClose<CR>
 
+
 "" indentLine
 let g:indentLine_char = '│'
+
+
+"" vim-closetag
+let g:closetag_filenames = '*.html,*.erb,*.php,*.vue'
 
