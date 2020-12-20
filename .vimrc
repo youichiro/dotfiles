@@ -65,7 +65,7 @@ syntax enable
 
 " 文字化け対策
 set encoding=utf-8
-set fileencodings=utf-8
+set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8
 set fileformats=unix,dos,mac
 
 " Tab visualization
@@ -174,7 +174,14 @@ nnoremap bp :bp<CR>
 nnoremap bn :bn<CR>
 
 " 行連結したときのスペースを削除する
-nnoremap J Jx
+nnoremap J Jx<C-Space>
+
+
+"" ノーマルモードでのキーマップ
+" jjでエスケープ
+inoremap <silent> jj <ESC>
+" 日本語入力で”っj”と入力してもEnterキーで確定させればインサートモードを抜ける
+inoremap <silent> っj <ESC>
 
 
 "" vim-plug
@@ -410,7 +417,8 @@ let g:table_mode_corner = '|'
 " GitHubプレビューの見た目にする
 let g:previm_disable_default_css = 1
 let g:previm_custom_css_path = '~/dotfiles/vim/previm/markdown.css'
-
+" ヘッダーを表示しない
+let g:previm_show_header = 0
 
 "" tagbar
 nnoremap tb :TagbarOpenAutoClose<CR>
