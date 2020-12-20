@@ -112,7 +112,7 @@ augroup END
 " iTerm2のキー設定を利用してShift+?を拾う
 map π <S-CR>
 map ˚ <S-Up>
-map Ô <S-Down>
+map ∆ <S-Down>
 
 
 "" キーマップ
