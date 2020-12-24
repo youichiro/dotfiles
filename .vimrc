@@ -125,8 +125,8 @@ inoremap <silent> jj <ESC>
 " カーソル位置の単語をヤンク
 nnoremap yw vawy
 " タブ操作
-" nnoremap <Tab> :tabn<CR>
-" nnoremap <S-Tab> :tabp<CR>
+nnoremap <Tab> :tabn<CR>
+nnoremap <S-Tab> :tabp<CR>
 nnoremap tn :tabn<CR>
 nnoremap tp :tabp<CR>
 nnoremap tc :tabnew<CR>
@@ -211,8 +211,6 @@ Plug 'tomasiser/vim-code-dark'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " HTMLの閉じカッコ補完
 Plug 'alvan/vim-closetag'
-" JSハイライト
-Plug 'othree/yajs.vim'
 " 閉じカッコ補完
 Plug 'mattn/vim-lexiv'
 " vue
@@ -238,10 +236,10 @@ Plug 'lambdalisue/fern.vim'
 Plug 'lambdalisue/fern-git-status.vim'
 Plug 'LumaKernel/fern-mapping-fzf.vim'
 " fern.vimにアイコンをつける
-Plug 'ryanoasis/vim-devicons'
-Plug 'lambdalisue/nerdfont.vim'
-Plug 'lambdalisue/fern-renderer-nerdfont.vim'
-Plug 'lambdalisue/glyph-palette.vim'
+" Plug 'ryanoasis/vim-devicons'
+" Plug 'lambdalisue/nerdfont.vim'
+" Plug 'lambdalisue/fern-renderer-nerdfont.vim'
+" Plug 'lambdalisue/glyph-palette.vim'
 " svelte
 Plug 'evanleck/vim-svelte', {'branch': 'main'}
 " エディタのみ表示する(:Goyo)
@@ -256,12 +254,19 @@ Plug 'deton/jasegment.vim'
 Plug 'prettier/vim-prettier', {
   \ 'do': 'yarn install',
   \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+"" React
+" syntax highlight
+Plug 'yuezk/vim-js'
+Plug 'maxmellon/vim-jsx-pretty'
+" snippets
+Plug 'cristianoliveira/vim-react-html-snippets'
+Plug 'SirVer/ultisnips'
 
 call plug#end()
 
 
 "" fern.vim
-
+" ファイルを開いていればタブで開き、そうでなければバッファで開く
 fun! OpenFern()
   if empty(@%)
     :Fern . -reveal=% -opener=edit
@@ -270,10 +275,10 @@ fun! OpenFern()
   endif
 endfun
 
-" 新規タブで開く
-nnoremap <C-n><C-n> :call OpenFern()<CR>
 " サイドバーで開く
 nnoremap <C-n><C-m> :Fern . -reveal=% -drawer -toggle -width=40<CR>
+" 新規タブで開く
+nnoremap <C-n><C-n> :call OpenFern()<CR>
 " 現在のバッファで開く
 nnoremap <C-n><C-b> :Fern . -reveal=% -opener=edit<CR>
 " " fern.vimにアイコンをつける
@@ -369,6 +374,7 @@ let g:coc_global_extensions = [
   \, 'coc-snippets'
   \, 'coc-vetur'
   \, 'coc-svelte'
+  \, 'coc-prettier'
   \ ]
 
 
@@ -430,4 +436,7 @@ let g:indentLine_char = '│'
 
 "" vim-closetag
 let g:closetag_filenames = '*.html,*.erb,*.php,*.vue'
+
+"" vim-jsx-pretty
+let g:vim_jsx_pretty_colorful_config = 1
 
