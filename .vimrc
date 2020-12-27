@@ -55,9 +55,9 @@ set mouse=a
 set clipboard+=unnamed
 set splitbelow  " :termで最下部にターミナルを開く
 set termwinsize=16x0  " ターミナルのサイズを指定
-set showtabline=2 " 常にタブラインを表示
+" set showtabline=2 " 常にタブラインを表示
 set updatetime=250 " 反映時間を短くする(デフォルトは4000ms)
-set scrolloff=20  " スクロールしたときにこの数だけ行数を残す
+set scrolloff=14  " スクロールしたときにこの数だけ行数を残す
 set noshowmode
 set pumheight=10 " 補完のポップアップメニューを10行までにする
 set shortmess+=F " コマンドラインにファイル名を表示しない
@@ -65,7 +65,8 @@ syntax enable
 
 " 文字化け対策
 set encoding=utf-8
-set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8
+set fileencoding=utf-8
+" set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8
 set fileformats=unix,dos,mac
 
 " Tab visualization
@@ -107,6 +108,8 @@ augroup auto_comment_off
   autocmd BufEnter * setlocal formatoptions-=o
 augroup END
 
+" set filetypes as typescriptreact
+autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
 
 "" 共通キーマップ
 " iTerm2のキー設定を利用してShift+?を拾う
@@ -125,8 +128,6 @@ inoremap <silent> jj <ESC>
 " カーソル位置の単語をヤンク
 nnoremap yw vawy
 " タブ操作
-nnoremap <Tab> :tabn<CR>
-nnoremap <S-Tab> :tabp<CR>
 nnoremap tn :tabn<CR>
 nnoremap tp :tabp<CR>
 nnoremap tc :tabnew<CR>
@@ -140,7 +141,7 @@ nnoremap c "_c
 " 選択箇所をヤンクして削除
 vnoremap yx ygvx
 " 単語検索マップ
-nnoremap <Space><Space> *N
+nnoremap * *N
 " カーソル位置以降をヤンクする
 nnoremap Y y$
 " ウィンドウ分割
@@ -150,6 +151,24 @@ nnoremap <C-s><C-v> :vsplit<CR><C-w>w
 nnoremap <CR> o<ESC>
 " 上に改行を挿入して移動
 nnoremap <S-CR> O<ESC>
+" buffer
+nnoremap bp :bp<CR>
+nnoremap bn :bn<CR>
+" 行連結したときのスペースを削除する
+nnoremap J Jx<C-Space>
+" ウィンドウ切り替え
+nnoremap <Tab> <C-w><C-w>
+" 行頭に移動
+nnoremap <S-h> 0
+vnoremap <S-h> 0
+" 行末に移動
+nnoremap <S-l> $
+vnoremap <S-l> $
+" インデントを整える
+nnoremap == mmggvG$=`m
+" バックスペースで削除
+nnoremap <Backspace> hx
+nnoremap <Space> a<Space><Esc>
 
 " ref: https://qiita.com/itmammoth/items/312246b4b7688875d023
 " 行を移動
@@ -159,29 +178,19 @@ nnoremap <S-Down> "zdd"zp
 vnoremap <S-Up> "zx<Up>"zP`[V`]
 vnoremap <S-Down> "zx"zp`[V`]
 
-" バッファが2つ以上ある場合はvimを終了しない
-" fun! Quit()
-"   if len(getbufinfo({'buflisted':1})) > 1
-"     bd
-"   else
-"     q
-"   endif
-" endfun
-" nnoremap :q :call Quit()
-
-" buffer
-nnoremap bp :bp<CR>
-nnoremap bn :bn<CR>
-
-" 行連結したときのスペースを削除する
-nnoremap J Jx<C-Space>
-
 
 "" ノーマルモードでのキーマップ
 " jjでエスケープ
 inoremap <silent> jj <ESC>
 " 日本語入力で”っj”と入力してもEnterキーで確定させればインサートモードを抜ける
 inoremap <silent> っj <ESC>
+
+
+" vimでファイルを開いたときに、tmuxのwindow名にファイル名を表示
+if exists('$TMUX') && !exists('$NORENAME')
+  au BufEnter * if empty(&buftype) | call system('tmux rename-window ""'.expand('%:t:S')) | endif
+  au VimLeave * call system('tmux set-window automatic-rename on')
+endif
 
 
 "" vim-plug
@@ -193,10 +202,6 @@ Plug 'tpope/vim-endwise'
 Plug 'tomtom/tcomment_vim'
 " 行末の半角スペースを可視化
 Plug 'bronson/vim-trailing-whitespace'
-" vim-lsp
-" Plug 'prabirshrestha/async.vim'
-" Plug 'prabirshrestha/vim-lsp'
-" Plug 'mattn/vim-lsp-settings'
 " gitの差分を表示
 Plug 'airblade/vim-gitgutter'
 " git操作
@@ -204,9 +209,9 @@ Plug 'tpope/vim-fugitive'
 " githubを開く
 Plug 'tpope/vim-rhubarb'
 " status-bar
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'tomasiser/vim-code-dark'
+" Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline-themes'
+" Plug 'tomasiser/vim-code-dark'
 " 補完
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " HTMLの閉じカッコ補完
@@ -228,9 +233,7 @@ Plug 'junegunn/fzf.vim'
 " windowのリサイズ (<C-q>でリサイズモード)
 Plug 'simeji/winresizer'
 " カーソル位置の単語をハイライト
-Plug 'osyo-manga/vim-brightest'
-" スクロールバー
-" Plug 'obcat/vim-sclow'
+" Plug 'osyo-manga/vim-brightest'
 " fern.vim
 Plug 'lambdalisue/fern.vim'
 Plug 'lambdalisue/fern-git-status.vim'
@@ -256,31 +259,31 @@ Plug 'prettier/vim-prettier', {
   \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
 "" React
 " syntax highlight
-Plug 'yuezk/vim-js'
-Plug 'maxmellon/vim-jsx-pretty'
+Plug 'HerringtonDarkholme/yats.vim'
 " snippets
-Plug 'cristianoliveira/vim-react-html-snippets'
-Plug 'SirVer/ultisnips'
+" Plug 'cristianoliveira/vim-react-html-snippets'
+" Plug 'SirVer/ultisnips'
+" TypeScript
+" Plug 'leafgarland/typescript-vim'
+" Plug 'peitalin/vim-jsx-typescript'
 
 call plug#end()
 
 
 "" fern.vim
 " ファイルを開いていればタブで開き、そうでなければバッファで開く
-fun! OpenFern()
-  if empty(@%)
-    :Fern . -reveal=% -opener=edit
-  else
-    :Fern . -reveal=% -opener=tabedit
-  endif
-endfun
+" fun! OpenFern()
+"   if empty(@%)
+"     :Fern . -reveal=% -opener=edit
+"   else
+"     :Fern . -reveal=% -opener=tabedit
+"   endif
+" endfun
 
 " サイドバーで開く
 nnoremap <C-n><C-m> :Fern . -reveal=% -drawer -toggle -width=40<CR>
-" 新規タブで開く
-nnoremap <C-n><C-n> :call OpenFern()<CR>
 " 現在のバッファで開く
-nnoremap <C-n><C-b> :Fern . -reveal=% -opener=edit<CR>
+nnoremap <C-n><C-n> :Fern . -reveal=% -opener=edit<CR>
 " " fern.vimにアイコンをつける
 " let g:fern#renderer = "nerdfont"
 " " fern.vimのアイコンに色をつける
@@ -297,34 +300,33 @@ let g:vim_markdown_auto_insert_bullets = 0
 let g:vim_markdown_new_list_item_indent = 0
 
 
-"" vim-airline
-" テーマ
-let g:airline_theme = 'hybrid'
-" let g:airline_theme = 'codedark'
-" tab line有効化
-let g:airline#extensions#tabline#enabled = 1
-" ステータスバーに表示する項目を変更する
-let g:airline#extensions#default#layout = [
-  \ [ 'a', 'b', 'c' ],
-  \ ['z']
-  \ ]
-let g:airline_section_c = '%t %M'
-let g:airline_section_z = get(g:, 'airline_linecolumn_prefix', '').'%3l:%-2v'
-let g:airline#extensions#wordcount#enabled = 0 " word countを表示しない
-" 変更がなければdiffの行数を表示しない
-let g:airline#extensions#hunks#non_zero_only = 1
-" powerlineを使う
-let g:airline_powerline_fonts = 1
-" タブラインの表示を変更する
-" ref:https://www.reddit.com/r/vim/comments/crs61u/best_airline_settings/
-let g:airline#extensions#tabline#fnamemod = ':t' " ファイル名のみタブに表示する
-let g:airline#extensions#tabline#show_buffers = 1 " enable/disable displaying buffers with a single tab
-let g:airline#extensions#tabline#show_splits = 0 "enable/disable displaying open splits per tab
-let g:airline#extensions#tabline#show_tabs = 1
-let g:airline#extensions#tabline#show_tab_nr = 0 " tab number
-let g:airline#extensions#tabline#show_tab_type = 1  " bufferかtabかを表示する
-let g:airline#extensions#tabline#close_symbol = '×'
-let g:airline#extensions#tabline#show_close_button = 0
+" "" vim-airline
+" " テーマ
+" let g:airline_theme = 'hybrid'
+" " tab line有効化
+" let g:airline#extensions#tabline#enabled = 1
+" " ステータスバーに表示する項目を変更する
+" let g:airline#extensions#default#layout = [
+"   \ [ 'a', 'b', 'c' ],
+"   \ ['z']
+"   \ ]
+" let g:airline_section_c = '%t %M'
+" let g:airline_section_z = get(g:, 'airline_linecolumn_prefix', '').'%3l:%-2v'
+" let g:airline#extensions#wordcount#enabled = 0 " word countを表示しない
+" " 変更がなければdiffの行数を表示しない
+" let g:airline#extensions#hunks#non_zero_only = 1
+" " powerlineを使う
+" let g:airline_powerline_fonts = 1
+" " タブラインの表示を変更する
+" " ref:https://www.reddit.com/r/vim/comments/crs61u/best_airline_settings/
+" let g:airline#extensions#tabline#fnamemod = ':t' " ファイル名のみタブに表示する
+" let g:airline#extensions#tabline#show_buffers = 1 " enable/disable displaying buffers with a single tab
+" let g:airline#extensions#tabline#show_splits = 0 "enable/disable displaying open splits per tab
+" let g:airline#extensions#tabline#show_tabs = 1
+" let g:airline#extensions#tabline#show_tab_nr = 0 " tab number
+" let g:airline#extensions#tabline#show_tab_type = 1  " bufferかtabかを表示する
+" let g:airline#extensions#tabline#close_symbol = '×'
+" let g:airline#extensions#tabline#show_close_button = 0
 
 
 "" fzf.vim
@@ -436,7 +438,4 @@ let g:indentLine_char = '│'
 
 "" vim-closetag
 let g:closetag_filenames = '*.html,*.erb,*.php,*.vue'
-
-"" vim-jsx-pretty
-let g:vim_jsx_pretty_colorful_config = 1
 
