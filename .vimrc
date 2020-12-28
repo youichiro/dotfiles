@@ -16,9 +16,6 @@
 " download and install -> https://github.com/yumitsu/font-menlo-extra/blob/master/Menlo-Regular-Normal.ttf
 " change terminal font
 
-"" install ctag for tagbar
-" $ brew install ctags
-
 "" テーマ
 " set background=dark
 " colorscheme hybrid
@@ -115,7 +112,7 @@ autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
 " iTerm2のキー設定を利用してShift+?を拾う
 map π <S-CR>
 map ˚ <S-Up>
-map ∆ <S-Down>
+map Ô <S-Down>
 
 
 "" キーマップ
@@ -154,8 +151,6 @@ nnoremap <S-CR> O<ESC>
 " buffer
 nnoremap bp :bp<CR>
 nnoremap bn :bn<CR>
-" 行連結したときのスペースを削除する
-nnoremap J Jx<C-Space>
 " ウィンドウ切り替え
 nnoremap <Tab> <C-w><C-w>
 " 行頭に移動
@@ -233,7 +228,7 @@ Plug 'junegunn/fzf.vim'
 " windowのリサイズ (<C-q>でリサイズモード)
 Plug 'simeji/winresizer'
 " カーソル位置の単語をハイライト
-" Plug 'osyo-manga/vim-brightest'
+Plug 'osyo-manga/vim-brightest'
 " fern.vim
 Plug 'lambdalisue/fern.vim'
 Plug 'lambdalisue/fern-git-status.vim'
@@ -249,14 +244,12 @@ Plug 'evanleck/vim-svelte', {'branch': 'main'}
 Plug 'junegunn/goyo.vim'
 " インデントラインを表示する
 Plug 'Yggdroot/indentLine'
-" 関数をアウトラインで表示する
-Plug 'majutsushi/tagbar'
 " 日本語の単語単位で移動する
 Plug 'deton/jasegment.vim'
 " prettier
-Plug 'prettier/vim-prettier', {
-  \ 'do': 'yarn install',
-  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+" Plug 'prettier/vim-prettier', {
+"       \ 'do': 'yarn install',
+"       \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
 "" React
 " syntax highlight
 Plug 'HerringtonDarkholme/yats.vim'
@@ -350,11 +343,11 @@ nnoremap <C-p> :call FzfOmniFiles()<CR>
 
 " :Rg
 command! -bang -nargs=* Rg
-\ call fzf#vim#grep(
-\ 'rg --column --line-number --hidden --ignore-case --no-heading --color=always '.shellescape(<q-args>), 1,
-\ <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 3..'}, 'up:60%')
-\ : fzf#vim#with_preview({'options': '--exact --delimiter : --nth 3..'}, 'right:50%:hidden', '?'),
-\ <bang>0)
+      \ call fzf#vim#grep(
+      \ 'rg --column --line-number --hidden --ignore-case --no-heading --color=always '.shellescape(<q-args>), 1,
+      \ <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 3..'}, 'up:60%')
+      \ : fzf#vim#with_preview({'options': '--exact --delimiter : --nth 3..'}, 'right:50%:hidden', '?'),
+      \ <bang>0)
 nnoremap <C-g> :Rg<CR>
 
 " カーソル位置の単語をRgでファイル検索
@@ -365,25 +358,25 @@ xnoremap fr y:Rg <C-R>"<CR>
 
 "" coc.nvim 以下のextentionが無ければインストールする
 let g:coc_global_extensions = [
-  \  'coc-lists'
-  \, 'coc-json'
-  \, 'coc-marketplace'
-  \, 'coc-html'
-  \, 'coc-css'
-  \, 'coc-tsserver'
-  \, 'coc-solargraph'
-  \, 'coc-python'
-  \, 'coc-snippets'
-  \, 'coc-vetur'
-  \, 'coc-svelte'
-  \, 'coc-prettier'
-  \ ]
+      \  'coc-lists'
+      \, 'coc-json'
+      \, 'coc-marketplace'
+      \, 'coc-html'
+      \, 'coc-css'
+      \, 'coc-tsserver'
+      \, 'coc-solargraph'
+      \, 'coc-python'
+      \, 'coc-snippets'
+      \, 'coc-vetur'
+      \, 'coc-svelte'
+      \, 'coc-prettier'
+      \ ]
 
 
 "" カーソル位置の単語をアンダーラインでハイライトする
 let g:brightest#highlight = {
-  \ "group" : "BrightestUnderline"
-  \}
+      \ "group" : "BrightestUnderline"
+      \}
 
 
 "" ウィンドサイズを変更するモード
@@ -427,9 +420,6 @@ let g:previm_disable_default_css = 1
 let g:previm_custom_css_path = '~/dotfiles/vim/previm/markdown.css'
 " ヘッダーを表示しない
 let g:previm_show_header = 0
-
-"" tagbar
-nnoremap tb :TagbarOpenAutoClose<CR>
 
 
 "" indentLine
