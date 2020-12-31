@@ -162,8 +162,14 @@ vnoremap <S-l> $
 " インデントを整える
 nnoremap == mmggvG$=`m
 " バックスペースで削除
-nnoremap <Backspace> hx
-nnoremap <Space> a<Space><Esc>
+" nnoremap <Backspace> hx
+nnoremap <Backspace> i<Backspace>
+" nnoremap <Space> a<Space><Esc>
+nnoremap <Space> i<Space>
+" 単語を置換する
+nnoremap # *:%s/<C-r>///g<Left><Left>
+" 再読み込み
+nnoremap <S-r> :e!<CR>
 
 " ref: https://qiita.com/itmammoth/items/312246b4b7688875d023
 " 行を移動
