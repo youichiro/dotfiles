@@ -239,11 +239,6 @@ Plug 'osyo-manga/vim-brightest'
 Plug 'lambdalisue/fern.vim'
 Plug 'lambdalisue/fern-git-status.vim'
 Plug 'LumaKernel/fern-mapping-fzf.vim'
-" fern.vimにアイコンをつける
-" Plug 'ryanoasis/vim-devicons'
-" Plug 'lambdalisue/nerdfont.vim'
-" Plug 'lambdalisue/fern-renderer-nerdfont.vim'
-" Plug 'lambdalisue/glyph-palette.vim'
 " svelte
 Plug 'evanleck/vim-svelte', {'branch': 'main'}
 " エディタのみ表示する(:Goyo)
@@ -259,12 +254,8 @@ Plug 'deton/jasegment.vim'
 "" React
 " syntax highlight
 Plug 'HerringtonDarkholme/yats.vim'
-" snippets
-" Plug 'cristianoliveira/vim-react-html-snippets'
-" Plug 'SirVer/ultisnips'
-" TypeScript
-" Plug 'leafgarland/typescript-vim'
-" Plug 'peitalin/vim-jsx-typescript'
+" スクロールをヌルヌルさせる
+Plug 'yuttie/comfortable-motion.vim'
 
 call plug#end()
 
@@ -283,14 +274,6 @@ call plug#end()
 nnoremap <C-n><C-m> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 " 現在のバッファで開く
 nnoremap <C-n><C-n> :Fern . -reveal=% -opener=edit<CR>
-" " fern.vimにアイコンをつける
-" let g:fern#renderer = "nerdfont"
-" " fern.vimのアイコンに色をつける
-" augroup my-glyph-palette
-"   autocmd! *
-"   autocmd FileType fern call glyph_palette#apply()
-"   autocmd FileType nerdtree,startify call glyph_palette#apply()
-" augroup END
 
 
 "" vim-markdown
