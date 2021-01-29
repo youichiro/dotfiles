@@ -114,6 +114,13 @@ map π <S-CR>
 map ˚ <S-Up>
 map Ô <S-Down>
 
+"" 自作コマンド
+function! JsonFormat()
+  set filetype=json
+  :%!jq '.'
+endfunction
+
+command Json :call JsonFormat()
 
 "" キーマップ
 " ハイライトを解除する
