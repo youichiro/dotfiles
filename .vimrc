@@ -108,19 +108,25 @@ augroup END
 " set filetypes as typescriptreact
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
 
+
 "" 共通キーマップ
 " iTerm2のキー設定を利用してShift+?を拾う
 map π <S-CR>
 map ˚ <S-Up>
 map Ô <S-Down>
 
+
 "" 自作コマンド
+" jsonフォーマットするコマンド
 function! JsonFormat()
   set filetype=json
   :%!jq '.'
 endfunction
-
 command Json :call JsonFormat()
+
+" ファイル名を変更するコマンド
+command! -nargs=1 -complete=file Rename f <args>|call delete(expand('#'))
+
 
 "" キーマップ
 " ハイライトを解除する
