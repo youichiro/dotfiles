@@ -177,6 +177,8 @@ nnoremap <Space> i<Space>
 nnoremap # *:%s/<C-r>///g<Left><Left>
 " 再読み込み
 nnoremap <S-r> :e!<CR>
+" 全選択
+nnoremap ga ggvG$
 
 " ref: https://qiita.com/itmammoth/items/312246b4b7688875d023
 " 行を移動
@@ -424,4 +426,3 @@ let g:indentLine_char = '│'
 
 "" vim-closetag
 let g:closetag_filenames = '*.html,*.erb,*.php,*.vue'
-
