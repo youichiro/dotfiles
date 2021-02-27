@@ -36,7 +36,7 @@ set backspace=indent,eol,start
 set incsearch
 set cursorline
 set showmatch
-set showcmd
+" set showcmd
 set wrap
 set wrapscan
 set hlsearch
@@ -45,7 +45,6 @@ set wildmenu
 set ignorecase
 set smartcase
 set guioptions+=R
-set laststatus=2
 set completeopt=menuone,noinsert
 set noswapfile
 set mouse=a
@@ -56,6 +55,9 @@ set termwinsize=16x0  " ターミナルのサイズを指定
 set updatetime=250 " 反映時間を短くする(デフォルトは4000ms)
 set scrolloff=14  " スクロールしたときにこの数だけ行数を残す
 set noshowmode
+set noshowcmd
+set cmdheight=1
+set laststatus=0
 set pumheight=10 " 補完のポップアップメニューを10行までにする
 set shortmess+=F " コマンドラインにファイル名を表示しない
 syntax enable
@@ -141,7 +143,7 @@ nnoremap yw vawy
 nnoremap tn :tabn<CR>
 nnoremap tp :tabp<CR>
 nnoremap tc :tabnew<CR>
-nnoremap tx :tabclose<CR>
+" nnoremap tx :tabclose<CR>  " tcと間違えやすいのでコメントアウト
 " コピーしない
 nnoremap x "_x
 nnoremap d "_d
@@ -155,8 +157,8 @@ nnoremap * *N
 " カーソル位置以降をヤンクする
 nnoremap Y y$
 " ウィンドウ分割
-nnoremap <C-s><C-s> :split<CR>
-nnoremap <C-s><C-v> :vsplit<CR><C-w>w
+nnoremap <C-s><C-s> :split<CR>:set laststatus=2<CR>
+nnoremap <C-s><C-v> :vsplit<CR><C-w>w:set laststatus=2<CR>
 " 下に空行を挿入して移動
 nnoremap <CR> o<ESC>
 " 上に改行を挿入して移動
@@ -175,7 +177,6 @@ vnoremap <S-l> $
 " インデントを整える
 nnoremap == mmggvG$=`m
 " バックスペースで削除
-" nnoremap <Backspace> hx
 nnoremap <Backspace> i<Backspace>
 " nnoremap <Space> a<Space><Esc>
 nnoremap <Space> i<Space>
@@ -185,6 +186,9 @@ nnoremap # *:%s/<C-r>///g<Left><Left>
 nnoremap <S-r> :e!<CR>
 " 全選択
 nnoremap ga ggvG$
+" lowercase, uppercaseを無効化
+vnoremap u <nop>
+vnoremap U <nop>
 
 " ref: https://qiita.com/itmammoth/items/312246b4b7688875d023
 " 行を移動
@@ -203,9 +207,28 @@ inoremap <silent> っj <ESC>
 
 
 " vimでファイルを開いたときに、tmuxのwindow名にファイル名を表示
-if exists('$TMUX') && !exists('$NORENAME')
-  au BufEnter * if empty(&buftype) | call system('tmux rename-window ""'.expand('%:t:S')) | endif
-  au VimLeave * call system('tmux set-window automatic-rename on')
+" if exists('$TMUX') && !exists('$NORENAME')
+"   au BufEnter * if empty(&buftype) | call system('tmux rename-window ""'.expand('%:t:S')) | endif
+"   au VimLeave * call system('tmux set-window automatic-rename on')
+" endif
+
+
+"" vimrcのロード後にコマンドを呼び出す
+function! HiddenStatusLine()
+  set laststatus=0
+endfunction
+command HiddenStatusLine :call HiddenStatusLine()
+
+function! ShowStatusLine()
+  set laststatus=2
+endfunction
+command ShowStatusLine :call ShowStatusLine()
+
+" https://vim-jp.org/vimdoc-ja/autocmd.html#VimEnter
+if v:vim_did_enter
+ call HiddenStatusLine()
+else
+ au VimEnter * call HiddenStatusLine()
 endif
 
 
@@ -225,8 +248,8 @@ Plug 'tpope/vim-fugitive'
 " githubを開く
 Plug 'tpope/vim-rhubarb'
 " status-bar
-" Plug 'vim-airline/vim-airline'
-" Plug 'vim-airline/vim-airline-themes'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 " Plug 'tomasiser/vim-code-dark'
 " 補完
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -277,19 +300,23 @@ call plug#end()
 
 "" fern.vim
 " ファイルを開いていればタブで開き、そうでなければバッファで開く
-" fun! OpenFern()
-"   if empty(@%)
-"     :Fern . -reveal=% -opener=edit
-"   else
-"     :Fern . -reveal=% -opener=tabedit
-"   endif
-" endfun
+fun! OpenFern()
+  if empty(@%)
+    :Fern . -reveal=% -opener=edit
+  else
+    :Fern . -reveal=% -opener=tabedit
+  endif
+endfun
+nnoremap <C-n><C-t> :call OpenFern()<CR>
+
+" 現在のバッファで開く
+" nnoremap <C-n><C-n> :Fern . -reveal=% -opener=edit<CR>
 
 " サイドバーで開く
-nnoremap <C-n><C-m> :Fern . -reveal=% -drawer -toggle -width=40<CR>
-" 現在のバッファで開く
-nnoremap <C-n><C-n> :Fern . -reveal=% -opener=edit<CR>
+nnoremap <C-n><C-s> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 
+" バッファで開く
+nnoremap <C-n><C-n> :Fern . -reveal=% -opener=edit<CR>
 
 "" vim-markdown
 let g:vim_markdown_folding_disabled = 1
@@ -297,38 +324,37 @@ let g:vim_markdown_auto_insert_bullets = 0
 let g:vim_markdown_new_list_item_indent = 0
 
 
-" "" vim-airline
-" " テーマ
-" let g:airline_theme = 'hybrid'
-" " tab line有効化
-" let g:airline#extensions#tabline#enabled = 1
-" " ステータスバーに表示する項目を変更する
-" let g:airline#extensions#default#layout = [
-"   \ [ 'a', 'b', 'c' ],
-"   \ ['z']
-"   \ ]
-" let g:airline_section_c = '%t %M'
-" let g:airline_section_z = get(g:, 'airline_linecolumn_prefix', '').'%3l:%-2v'
-" let g:airline#extensions#wordcount#enabled = 0 " word countを表示しない
-" " 変更がなければdiffの行数を表示しない
-" let g:airline#extensions#hunks#non_zero_only = 1
-" " powerlineを使う
-" let g:airline_powerline_fonts = 1
-" " タブラインの表示を変更する
-" " ref:https://www.reddit.com/r/vim/comments/crs61u/best_airline_settings/
-" let g:airline#extensions#tabline#fnamemod = ':t' " ファイル名のみタブに表示する
-" let g:airline#extensions#tabline#show_buffers = 1 " enable/disable displaying buffers with a single tab
-" let g:airline#extensions#tabline#show_splits = 0 "enable/disable displaying open splits per tab
-" let g:airline#extensions#tabline#show_tabs = 1
-" let g:airline#extensions#tabline#show_tab_nr = 0 " tab number
-" let g:airline#extensions#tabline#show_tab_type = 1  " bufferかtabかを表示する
-" let g:airline#extensions#tabline#close_symbol = '×'
-" let g:airline#extensions#tabline#show_close_button = 0
+"" vim-airline
+" テーマ
+let g:airline_theme = 'bubblegum'
+" ステータスバーに表示する項目を変更する
+let g:airline#extensions#default#layout = [
+  \ ['a', 'c'],
+  \ []
+  \ ]
+let g:airline_section_c = '%t %M'
+let g:airline#extensions#wordcount#enabled = 0 " word countを表示しない
+" 変更がなければdiffの行数を表示しない
+let g:airline#extensions#hunks#non_zero_only = 1
+" powerlineを使う
+let g:airline_powerline_fonts = 1
+" tablineの有効化/無効化
+let g:airline#extensions#tabline#enabled = 1
+" タブラインの表示を変更する
+" ref: https://www.reddit.com/r/vim/comments/crs61u/best_airline_settings/
+let g:airline#extensions#tabline#fnamemod = ':t' " ファイル名のみタブに表示する
+let g:airline#extensions#tabline#show_buffers = 0      " dont show buffers in the tabline
+let g:airline#extensions#tabline#show_splits = 0 "enable/disable displaying open splits per tab
+let g:airline#extensions#tabline#show_tabs = 1
+let g:airline#extensions#tabline#show_tab_nr = 0 " tab number
+let g:airline#extensions#tabline#show_tab_type = 0  " bufferかtabかを表示する
+let g:airline#extensions#tabline#close_symbol = '×'
+let g:airline#extensions#tabline#show_close_button = 0
 
 
 "" fzf.vim
 nnoremap fb :Buffers<CR>
-nnoremap fp :Buffers<CR><CR>
+nnoremap fp :History<CR><CR>
 nnoremap fl :BLines<CR>
 nnoremap fm :Marks<CR>
 nnoremap fh :History<CR>
@@ -432,3 +458,8 @@ let g:indentLine_char = '│'
 
 "" vim-closetag
 let g:closetag_filenames = '*.html,*.erb,*.php,*.vue'
+
+"" Goyo
+let g:goyo_width = 100
+let g:goyo_height = '100%'
+
