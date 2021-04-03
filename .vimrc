@@ -294,6 +294,8 @@ Plug 'deton/jasegment.vim'
 Plug 'HerringtonDarkholme/yats.vim'
 " スクロールをヌルヌルさせる
 Plug 'yuttie/comfortable-motion.vim'
+" terraform
+Plug 'hashivim/vim-terraform'
 
 call plug#end()
 
