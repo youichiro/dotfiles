@@ -129,6 +129,12 @@ command Json :call JsonFormat()
 " ファイル名を変更するコマンド
 command! -nargs=1 -complete=file Rename f <args>|call delete(expand('#'))
 
+" 開いているファイルのパスを確認するコマンド
+function! Pwd()
+  :echo expand("%:p")
+endfunction
+command Pwd :call Pwd()
+
 
 "" キーマップ
 " ハイライトを解除する
@@ -143,7 +149,9 @@ nnoremap yw vawy
 nnoremap tn :tabn<CR>
 nnoremap tp :tabp<CR>
 nnoremap tc :tabnew<CR>
-" nnoremap tx :tabclose<CR>  " tcと間違えやすいのでコメントアウト
+nnoremap <Space>] :tabn<CR>
+nnoremap <Space>[ :tabp<CR>
+nnoremap <Space><Space> :tabnew<CR>:b #<CR>
 " コピーしない
 nnoremap x "_x
 nnoremap d "_d
@@ -178,8 +186,6 @@ vnoremap <S-l> $
 nnoremap == mmggvG$=`m
 " バックスペースで削除
 nnoremap <Backspace> i<Backspace>
-" nnoremap <Space> a<Space><Esc>
-nnoremap <Space> i<Space>
 " 単語を置換する
 nnoremap # *:%s/<C-r>///g<Left><Left>
 " 再読み込み
@@ -309,13 +315,13 @@ fun! OpenFern()
     :Fern . -reveal=% -opener=tabedit
   endif
 endfun
-nnoremap <C-n><C-t> :call OpenFern()<CR>
+nnoremap <C-n><C-m> :call OpenFern()<CR>
 
 " 現在のバッファで開く
 " nnoremap <C-n><C-n> :Fern . -reveal=% -opener=edit<CR>
 
 " サイドバーで開く
-nnoremap <C-n><C-s> :Fern . -reveal=% -drawer -toggle -width=40<CR>
+nnoremap <C-n><C-b> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 
 " バッファで開く
 nnoremap <C-n><C-n> :Fern . -reveal=% -opener=edit<CR>
