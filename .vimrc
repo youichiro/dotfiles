@@ -37,7 +37,7 @@ set incsearch
 set cursorline
 set showmatch
 " set showcmd
-set wrap
+set wrap  "折り返す→wrap, 折り返さない→nowrap
 set wrapscan
 set hlsearch
 set virtualedit=block
@@ -48,6 +48,7 @@ set guioptions+=R
 set completeopt=menuone,noinsert
 set noswapfile
 set mouse=a
+set ttymouse=xterm2
 set clipboard+=unnamed
 set splitbelow  " :termで最下部にターミナルを開く
 set termwinsize=16x0  " ターミナルのサイズを指定
@@ -219,7 +220,7 @@ inoremap <silent> っj <ESC>
 " endif
 
 
-"" vimrcのロード後にコマンドを呼び出す
+" vimステータスラインを表示/非表示するコマンド
 function! HiddenStatusLine()
   set laststatus=0
 endfunction
@@ -230,6 +231,8 @@ function! ShowStatusLine()
 endfunction
 command ShowStatusLine :call ShowStatusLine()
 
+
+"" vimrcのロード後にコマンドを呼び出す
 " https://vim-jp.org/vimdoc-ja/autocmd.html#VimEnter
 if v:vim_did_enter
  call HiddenStatusLine()
