@@ -221,10 +221,10 @@ inoremap <silent> っj <ESC>
 
 
 " vimステータスラインを表示/非表示するコマンド
-function! HiddenStatusLine()
+function! HideStatusLine()
   set laststatus=0
 endfunction
-command HiddenStatusLine :call HiddenStatusLine()
+command HideStatusLine :call HideStatusLine()
 
 function! ShowStatusLine()
   set laststatus=2
@@ -235,9 +235,9 @@ command ShowStatusLine :call ShowStatusLine()
 "" vimrcのロード後にコマンドを呼び出す
 " https://vim-jp.org/vimdoc-ja/autocmd.html#VimEnter
 if v:vim_did_enter
- call HiddenStatusLine()
+ call HideStatusLine()
 else
- au VimEnter * call HiddenStatusLine()
+ au VimEnter * call HideStatusLine()
 endif
 
 
@@ -405,7 +405,6 @@ let g:coc_global_extensions = [
       \, 'coc-html'
       \, 'coc-css'
       \, 'coc-tsserver'
-      \, 'coc-solargraph'
       \, 'coc-python'
       \, 'coc-snippets'
       \, 'coc-vetur'
@@ -473,4 +472,12 @@ let g:closetag_filenames = '*.html,*.erb,*.php,*.vue'
 "" Goyo
 let g:goyo_width = 100
 let g:goyo_height = '100%'
+
+
+"" 背景透過
+highlight Normal ctermbg=none
+highlight NonText ctermbg=none
+highlight LineNr ctermbg=none
+highlight Folded ctermbg=none
+highlight EndOfBuffer ctermbg=none
 
