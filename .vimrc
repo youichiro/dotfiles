@@ -61,7 +61,10 @@ set cmdheight=1
 set laststatus=0
 set pumheight=10 " 補完のポップアップメニューを10行までにする
 set shortmess+=F " コマンドラインにファイル名を表示しない
+set autowrite
+
 syntax enable
+filetype plugin indent on
 
 " 文字化け対策
 set encoding=utf-8
@@ -111,6 +114,9 @@ augroup END
 " set filetypes as typescriptreact
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
 
+" 保存時に無駄なスペースを削除する
+" autocmd BufWritePre * :FixWhitespace
+
 
 "" 共通キーマップ
 " iTerm2のキー設定を利用してShift+?を拾う
@@ -159,6 +165,11 @@ nnoremap d "_d
 nnoremap D "_D
 nnoremap s "_s
 nnoremap c "_c
+vnoremap x "_x
+vnoremap d "_d
+vnoremap D "_D
+vnoremap s "_s
+vnoremap c "_c
 " 選択箇所をヤンクして削除
 vnoremap yx ygvx
 " 単語検索マップ
@@ -305,6 +316,13 @@ Plug 'HerringtonDarkholme/yats.vim'
 Plug 'yuttie/comfortable-motion.vim'
 " terraform
 Plug 'hashivim/vim-terraform'
+" rust
+Plug 'rust-lang/rust.vim'
+" go
+Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
+Plug 'SirVer/ultisnips'
+" 選択範囲を拡縮する
+Plug 'terryma/vim-expand-region'
 
 call plug#end()
 
@@ -410,6 +428,8 @@ let g:coc_global_extensions = [
       \, 'coc-vetur'
       \, 'coc-svelte'
       \, 'coc-prettier'
+      \, 'coc-rls'
+      \, 'coc-go'
       \ ]
 
 
@@ -480,4 +500,29 @@ highlight NonText ctermbg=none
 highlight LineNr ctermbg=none
 highlight Folded ctermbg=none
 highlight EndOfBuffer ctermbg=none
+
+"" rust.vim
+" 保存時にrustfmtを実行
+let g:rustfmt_autosave = 1
+
+"" vim-go
+let g:go_fmt_command = "goimports"
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_build_constraints = 1
+let g:go_highlight_generate_tags = 1
+
+"" vim-expand-region
+" vを押すたびに範囲を拡大
+vmap v <Plug>(expand_region_expand)
+" 範囲を縮小
+vmap <C-v> <Plug>(expand_region_shrink)
+
+"" comfortable-motion
+let g:comfortable_motion_interval = 2400.0 / 60
+let g:comfortable_motion_friction = 100.0
+let g:comfortable_motion_air_drag = 3.0
 
