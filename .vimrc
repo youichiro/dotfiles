@@ -24,6 +24,7 @@ colorscheme codedark
 "" options
 set shell=$SHELL
 set number
+set relativenumber
 set smarttab
 set expandtab
 set tabstop=2
