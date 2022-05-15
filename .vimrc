@@ -50,7 +50,7 @@ set completeopt=menuone,noinsert
 set noswapfile
 set mouse=a
 set ttymouse=xterm2
-set clipboard+=unnamed
+set clipboard=unnamed
 set splitbelow  " :termで最下部にターミナルを開く
 set termwinsize=16x0  " ターミナルのサイズを指定
 " set showtabline=2 " 常にタブラインを表示
@@ -115,6 +115,7 @@ augroup END
 " set filetypes as typescriptreact
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
 
+"" 保存時に実行するコマンド
 " 保存時に無駄なスペースを削除する
 " autocmd BufWritePre * :FixWhitespace
 
@@ -154,12 +155,12 @@ inoremap <silent> jj <ESC>
 " カーソル位置の単語をヤンク
 nnoremap yw vawy
 " タブ操作
-nnoremap tn :tabn<CR>
-nnoremap tp :tabp<CR>
-nnoremap tc :tabnew<CR>
-nnoremap <Space>] :tabn<CR>
-nnoremap <Space>[ :tabp<CR>
-nnoremap <Space><Space> :tabnew<CR>:b #<CR>
+" nnoremap tn :tabn<CR>
+" nnoremap tp :tabp<CR>
+" nnoremap tc :tabnew<CR>
+" nnoremap <Space>] :tabn<CR>
+" nnoremap <Space>[ :tabp<CR>
+" nnoremap <Space><Space> :tabnew<CR>:b #<CR>
 " コピーしない
 nnoremap x "_x
 nnoremap d "_d
@@ -211,11 +212,11 @@ vnoremap U <nop>
 
 " ref: https://qiita.com/itmammoth/items/312246b4b7688875d023
 " 行を移動
-nnoremap <S-Up> "zdd<Up>"zP
-nnoremap <S-Down> "zdd"zp
+" nnoremap <S-Up> "zdd<Up>"zP
+" nnoremap <S-Down> "zdd"zp
 " 複数行を移動
-vnoremap <S-Up> "zx<Up>"zP`[V`]
-vnoremap <S-Down> "zx"zp`[V`]
+vnoremap <S-k> "zx<Up>"zP`[V`]
+vnoremap <S-j> "zx"zp`[V`]
 
 
 "" ノーマルモードでのキーマップ
@@ -247,9 +248,9 @@ command ShowStatusLine :call ShowStatusLine()
 "" vimrcのロード後にコマンドを呼び出す
 " https://vim-jp.org/vimdoc-ja/autocmd.html#VimEnter
 if v:vim_did_enter
- call HideStatusLine()
+  "  call HideStatusLine()
 else
- au VimEnter * call HideStatusLine()
+  "  au VimEnter * call HideStatusLine()
 endif
 
 
@@ -265,7 +266,7 @@ Plug 'bronson/vim-trailing-whitespace'
 " gitの差分を表示
 Plug 'airblade/vim-gitgutter'
 " git操作
-Plug 'tpope/vim-fugitive'
+" Plug 'tpope/vim-fugitive'
 " githubを開く
 Plug 'tpope/vim-rhubarb'
 " status-bar
@@ -324,6 +325,15 @@ Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'SirVer/ultisnips'
 " 選択範囲を拡縮する
 Plug 'terryma/vim-expand-region'
+" GraphQL
+Plug 'jparise/vim-graphql'
+" Prisma
+Plug 'pantharshit00/vim-prisma'
+" 検索の拡張
+Plug 'easymotion/vim-easymotion'
+" カッコを追加・削除・変更
+Plug 'rhysd/vim-operator-surround'
+Plug 'kana/vim-operator-user'
 
 call plug#end()
 
@@ -337,15 +347,12 @@ fun! OpenFern()
     :Fern . -reveal=% -opener=tabedit
   endif
 endfun
-nnoremap <C-n><C-m> :call OpenFern()<CR>
-
-" 現在のバッファで開く
-" nnoremap <C-n><C-n> :Fern . -reveal=% -opener=edit<CR>
+" nnoremap <C-n><C-m> :call OpenFern()<CR>
 
 " サイドバーで開く
 nnoremap <C-n><C-b> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 
-" バッファで開く
+" 現在のバッファで開く
 nnoremap <C-n><C-n> :Fern . -reveal=% -opener=edit<CR>
 
 "" vim-markdown
@@ -359,17 +366,17 @@ let g:vim_markdown_new_list_item_indent = 0
 let g:airline_theme = 'bubblegum'
 " ステータスバーに表示する項目を変更する
 let g:airline#extensions#default#layout = [
-  \ ['a', 'c'],
-  \ []
-  \ ]
-let g:airline_section_c = '%t %M'
+      \ ['a', 'c'],
+      \ []
+      \ ]
+let g:airline_section_c = airline#section#create(['%F %M']) " %F: pullpath, %t: filename
 let g:airline#extensions#wordcount#enabled = 0 " word countを表示しない
 " 変更がなければdiffの行数を表示しない
 let g:airline#extensions#hunks#non_zero_only = 1
 " powerlineを使う
-let g:airline_powerline_fonts = 1
+" let g:airline_powerline_fonts = 1
 " tablineの有効化/無効化
-let g:airline#extensions#tabline#enabled = 1
+" let g:airline#extensions#tabline#enabled = 1
 " タブラインの表示を変更する
 " ref: https://www.reddit.com/r/vim/comments/crs61u/best_airline_settings/
 let g:airline#extensions#tabline#fnamemod = ':t' " ファイル名のみタブに表示する
@@ -384,6 +391,7 @@ let g:airline#extensions#tabline#show_close_button = 0
 
 "" fzf.vim
 nnoremap fb :Buffers<CR>
+nnoremap ls :Buffers<CR>
 nnoremap fp :History<CR><CR>
 nnoremap fl :BLines<CR>
 nnoremap fm :Marks<CR>
@@ -450,6 +458,10 @@ let g:winresizer_start_key = '<C-q>'
 nmap <silent> gd <Plug>(coc-definition)
 " 参照一覧を表示
 nmap <silent> gr <Plug>(coc-references)
+" 型定義
+nmap <silent> gt <Plug>(coc-type-definition)
+" ホバーでinfoを表示
+nmap <silent> gi :call CocAction('doHover')<CR>
 
 "" git操作
 " ref: https://wonderwall.hatenablog.com/entry/2016/03/26/211710
@@ -484,11 +496,12 @@ let g:previm_show_header = 0
 
 
 "" indentLine
-let g:indentLine_char = '│'
+" let g:indentLine_char = '│'
+let g:indentLine_char = ''
 
 
 "" vim-closetag
-let g:closetag_filenames = '*.html,*.erb,*.php,*.vue'
+let g:closetag_filenames = '*.html,*.erb,*.php,*.vue,*.tsx,*.ts,*.js'
 
 "" Goyo
 let g:goyo_width = 100
@@ -527,3 +540,16 @@ let g:comfortable_motion_interval = 2400.0 / 60
 let g:comfortable_motion_friction = 100.0
 let g:comfortable_motion_air_drag = 3.0
 
+"" vim-easymotion
+map <Space>f <Plug>(easymotion-sn)
+let g:EasyMotion_smartcase = 1
+
+"" vim-operator-surround
+" operator mappings
+map <silent>sa <Plug>(operator-surround-append)
+map <silent>sd <Plug>(operator-surround-delete)
+map <silent>sr <Plug>(operator-surround-replace)
+
+"" tcomment_vim
+vnoremap <Space>- :TComment<CR>
+nnoremap <Space>- :TComment<CR>
