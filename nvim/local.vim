@@ -1,3 +1,5 @@
+" base config: https://github.com/rafi/vim-config
+
 set encoding=utf-8
 scriptencoding utf-8
 
