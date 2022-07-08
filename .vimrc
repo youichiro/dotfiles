@@ -24,7 +24,7 @@ colorscheme codedark
 "" options
 set shell=$SHELL
 set number
-set relativenumber
+" set relativenumber
 set smarttab
 set expandtab
 set tabstop=2
@@ -158,9 +158,9 @@ nnoremap yw vawy
 " nnoremap tn :tabn<CR>
 " nnoremap tp :tabp<CR>
 " nnoremap tc :tabnew<CR>
-" nnoremap <Space>] :tabn<CR>
-" nnoremap <Space>[ :tabp<CR>
-" nnoremap <Space><Space> :tabnew<CR>:b #<CR>
+nnoremap <Space>] :tabn<CR>
+nnoremap <Space>[ :tabp<CR>
+nnoremap <Space><Space> :tabnew<CR>:b #<CR>
 " コピーしない
 nnoremap x "_x
 nnoremap d "_d
