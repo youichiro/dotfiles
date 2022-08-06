@@ -85,6 +85,12 @@ augroup fileTypeIndent
   autocmd BufNewFile,BufRead *.py setlocal tabstop=4 shiftwidth=4
 augroup END
 
+" goの場合はタブ非表示
+augroup goTabViz
+  autocmd!
+  autocmd BufNewFile,BufRead *.go setl nolist
+augroup End
+
 " 全角スペースの表示
 function! ZenkakuSpace()
   highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
@@ -369,7 +375,7 @@ let g:airline#extensions#default#layout = [
       \ ['a', 'c'],
       \ []
       \ ]
-let g:airline_section_c = airline#section#create(['%F %M']) " %F: pullpath, %t: filename
+let g:airline_section_c = airline#section#create(['%t %M']) " %F: pullpath, %t: filename
 let g:airline#extensions#wordcount#enabled = 0 " word countを表示しない
 " 変更がなければdiffの行数を表示しない
 let g:airline#extensions#hunks#non_zero_only = 1
@@ -460,7 +466,7 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gr <Plug>(coc-references)
 " 型定義
 nmap <silent> gt <Plug>(coc-type-definition)
-" ホバーでinfoを表示
+" ホバーでinfo(hint, ヒント)を表示
 nmap <silent> gi :call CocAction('doHover')<CR>
 
 "" git操作
