@@ -259,6 +259,9 @@ else
   "  au VimEnter * call HideStatusLine()
 endif
 
+" 補完表示時のEnterで改行をしない
+inoremap <expr><CR> pumvisible() ? "<C-y>" : "<CR>"
+
 
 "" vim-plug
 call plug#begin('~/.vim/plugged')
@@ -360,6 +363,9 @@ nnoremap <C-n><C-b> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 
 " 現在のバッファで開く
 nnoremap <C-n><C-n> :Fern . -reveal=% -opener=edit<CR>
+
+" disable warning
+let g:fern_disable_startup_warnings = 1
 
 "" vim-markdown
 let g:vim_markdown_folding_disabled = 1
