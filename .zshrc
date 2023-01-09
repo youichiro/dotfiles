@@ -1,31 +1,15 @@
-# setup
-# brew install fzf
-# brew install peco
-# brew install tig
+# install following packages at first
+# - `brew install fzf`
+# - `brew install peco`
+# - `brew install zplug`
 
 
 # PATH
+# TODO: export your PATHs here
 
 
 # history
-export LANG=ja_JP.UTF-8
 export HISTFILE=~/.zsh_history
-export HISTSIZE=10000
-export SAVEHIST=1000000
-export HISTFILESIZE=10000
-setopt hist_ignore_dups
-setopt hist_reduce_blanks
-setopt hist_no_store
-setopt hist_expand
-setopt inc_append_history
-
-
-# option
-setopt auto_pushd
-setopt pushd_ignore_dups
-setopt print_eight_bit
-setopt no_flow_control
-setopt interactive_comments
 
 
 # color
@@ -39,10 +23,8 @@ zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 # PROMPT
 autoload colors
 colors
-PROMPT="%{${fg[yellow]}%}[%n@%m]%{${reset_color}%} %~ %# "
 
-
-# show branch name
+## show branch name
 autoload -Uz vcs_info
 setopt prompt_subst
 zstyle ':vcs_info:git:*' check-for-changes true
@@ -51,7 +33,9 @@ zstyle ':vcs_info:git:*' unstagedstr "%F{red}+"
 zstyle ':vcs_info:*' formats "%F{green}%c%u[%b]%f"
 zstyle ':vcs_info:*' actionformats '[%b|%a]'
 precmd () { vcs_info }
-RPROMPT=$RPROMPT'${vcs_info_msg_0_}'
+
+PROMPT="%{${fg[green]}%}▶︎"'${vcs_info_msg_0_}'"%{${reset_color}%} %~
+$ "
 
 
 # complement
@@ -59,23 +43,38 @@ autoload -Uz compinit
 compinit
 
 
+# load fzf config
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+
 # functions
 function cd(){ builtin cd $@ && ls; } # cdしたらlsする
 
-function fvim() {
+function f() {
   files=$(git ls-files) &&
   selected_files=$(echo "$files" | fzf -m --preview 'head -100 {}') &&
   vim $selected_files
 }
 
+## search command history
 function peco-history-selection() {
-  BUFFER=`history -n 1 | tail -r  | awk '!a[$0]++' | peco`
+  BUFFER=`history -nr 1  | awk '!a[$0]++' | peco`
+  echo $BUFFER
+  echo $BUFFER | perl -pe 'chomp' | pbcopy  # chompで改行を削除する
+  echo "copied the command!"
   eval $BUFFER
 }
 
-
-# vals
-export EDITOR='vim'
+## git checkout
+function gcp() {
+    git branch -a --sort=-authordate |
+    grep -v -e '->' -e '*' |
+    perl -pe 's/^\h+//g' |
+    perl -pe 's#^remotes/origin/###' |
+    perl -nle 'print if !$c{$_}++' |
+    peco |
+    xargs git checkout
+}
 
 
 # alias
@@ -91,16 +90,44 @@ alias tmuxconf='vim ~/.tmux.conf'
 alias la='ls -a'
 alias ll='ls -l'
 alias lla='ls -la'
+alias c='clear'
 alias h='history'
 alias hs=peco-history-selection
+alias v='vim'
+alias t='tmux'
 
+## docker alias
+alias dockerps='docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
+alias dockerpsa='docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
+alias dockerimages="docker images --format \"table {{.Size}}\t{{.Repository}}:{{.Tag}}\t{{.ID}}\" | sed -e '1d' | sort -h -r"
+alias dc='docker compose'
 
-# alias for git
+## vim-plug alias
+alias pluginstall='vim +PlugInstall +q +q'
+alias plugclean='vim +PlugClean +q +q'
+
+## git alias
 alias gs='git status'
 alias ga='git add'
 alias gd='git diff'
 alias gds='git diff --staged'
+alias gc='git checkout'
 alias gcm='git commit -m'
 alias gl='git log --oneline --graph --decorate'
 alias gp='git push origin HEAD'
+alias gf='git fetch'
+
+
+# setup zplug
+export ZPLUG_HOME=/usr/local/opt/zplug
+source $ZPLUG_HOME/init.zsh
+
+
+# install enhancd using zplug
+zplug "b4b4r07/enhancd", use:init.sh
+export ENHANCD_DISABLE_DOT=1     # ..は普通に..する
+export ENHANCD_HOOK_AFTER_CD=ls  # cdした後に実行するコマンドを指定
+export ENHANCD_FILTER=fzy
+
+zplug load
 
