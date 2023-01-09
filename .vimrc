@@ -224,14 +224,6 @@ vnoremap U <nop>
 vnoremap <S-k> "zx<Up>"zP`[V`]
 vnoremap <S-j> "zx"zp`[V`]
 
-
-"" ノーマルモードでのキーマップ
-" jjでエスケープ
-inoremap <silent> jj <ESC>
-" 日本語入力で”っj”と入力してもEnterキーで確定させればインサートモードを抜ける
-inoremap <silent> っj <ESC>
-
-
 " vimでファイルを開いたときに、tmuxのwindow名にファイル名を表示
 " if exists('$TMUX') && !exists('$NORENAME')
 "   au BufEnter * if empty(&buftype) | call system('tmux rename-window ""'.expand('%:t:S')) | endif
@@ -288,8 +280,6 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'alvan/vim-closetag'
 " 閉じカッコ補完
 Plug 'mattn/vim-lexiv'
-" vue
-Plug 'posva/vim-vue'
 " markdown syntax highlight
 Plug 'tpope/vim-markdown'
 " markdown preview (:PrevimOpenでブラウザが起動する)
@@ -308,8 +298,6 @@ Plug 'osyo-manga/vim-brightest'
 Plug 'lambdalisue/fern.vim'
 Plug 'lambdalisue/fern-git-status.vim'
 Plug 'LumaKernel/fern-mapping-fzf.vim'
-" svelte
-Plug 'evanleck/vim-svelte', {'branch': 'main'}
 " エディタのみ表示する(:Goyo)
 Plug 'junegunn/goyo.vim'
 " インデントラインを表示する
@@ -343,7 +331,10 @@ Plug 'easymotion/vim-easymotion'
 " カッコを追加・削除・変更
 Plug 'rhysd/vim-operator-surround'
 Plug 'kana/vim-operator-user'
-
+" vimでGitHubを開く
+Plug 'tyru/open-browser-github.vim'
+" copy github link
+Plug 'knsh14/vim-github-link' " :GetCommitLink
 call plug#end()
 
 
@@ -508,8 +499,8 @@ let g:previm_show_header = 0
 
 
 "" indentLine
-" let g:indentLine_char = '│'
-let g:indentLine_char = ''
+let g:indentLine_char = '|'
+" let g:indentLine_char = ''
 
 
 "" vim-closetag
@@ -540,6 +531,7 @@ let g:go_highlight_operators = 1
 let g:go_highlight_extra_types = 1
 let g:go_highlight_build_constraints = 1
 let g:go_highlight_generate_tags = 1
+let g:go_metalinter_command='golangci-lint'
 
 "" vim-expand-region
 " vを押すたびに範囲を拡大
