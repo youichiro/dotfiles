@@ -2,14 +2,11 @@
 # - `brew install fzf`
 # - `brew install peco`
 # - `brew install zplug`
+# - `brew install zsh-autosuggestions`
 
 
 # PATH
 # TODO: export your PATHs here
-
-
-# history
-export HISTFILE=~/.zsh_history
 
 
 # color
@@ -48,6 +45,7 @@ compinit
 
 
 # functions
+## ls after cd
 function cd(){ builtin cd $@ && ls; } # cdしたらlsする
 
 function f() {
@@ -123,7 +121,7 @@ export ZPLUG_HOME=/usr/local/opt/zplug
 source $ZPLUG_HOME/init.zsh
 
 
-# install enhancd using zplug
+# enhancd
 zplug "b4b4r07/enhancd", use:init.sh
 export ENHANCD_DISABLE_DOT=1     # ..は普通に..する
 export ENHANCD_HOOK_AFTER_CD=ls  # cdした後に実行するコマンドを指定
@@ -131,3 +129,6 @@ export ENHANCD_FILTER=fzy
 
 zplug load
 
+
+# zsh-autosuggestions
+source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
