@@ -1,79 +1,47 @@
-# install following packages at first
-# - `brew install fzf`
-# - `brew install peco`
-# - `brew install zplug`
-# - `brew install zsh-autosuggestions`
+# You need to execute these commands:
+# - brew install zsh-completions
+# - brew install zsh-autosuggestions
+# - brew install zplug
+# - brew install fzy
+# - zplug install
+
+zstyle ":completion:*:commands" rehash 1
+
+# paths
+export PATH="$PATH:/opt/homebrew/bin"
+export PATH="$PATH:$HOME/.pyenv/bin"
+export PATH="$PATH:$HOME/.nodenv/shims"
+export PATH="/Users/youichiro/.local/bin:$PATH"
+
+# evals
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+eval "$(nodenv init -)"
+eval "$(direnv hook zsh)"
+
+# colors
+autoload -Uz colors && colors
 
 
-# PATH
-# TODO: export your PATHs here
-
-
-# color
-export LSCOLORS=Exfxcxdxbxegedabagacad
-export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
-export ZLS_COLORS=$LS_COLORS
-export CLICOLOR=true
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-
-
-# PROMPT
-autoload colors
-colors
-
-## show branch name
-autoload -Uz vcs_info
-setopt prompt_subst
-zstyle ':vcs_info:git:*' check-for-changes true
-zstyle ':vcs_info:git:*' stagedstr "%F{yellow}!"
-zstyle ':vcs_info:git:*' unstagedstr "%F{red}+"
-zstyle ':vcs_info:*' formats "%F{green}%c%u[%b]%f"
-zstyle ':vcs_info:*' actionformats '[%b|%a]'
-precmd () { vcs_info }
-
-PROMPT="%{${fg[green]}%}▶︎"'${vcs_info_msg_0_}'"%{${reset_color}%} %~
-$ "
-
-
-# complement
-autoload -Uz compinit
-compinit
-
-
-# load fzf config
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
+# prompt
+# PROMPT="%{${fg[green]}%}▶︎ %~ %{${reset_color}%}
+# $ "
 
 # functions
-## ls after cd
-function cd(){ builtin cd $@ && ls; } # cdしたらlsする
+## cdしたらlsする
+function cd(){ builtin cd $@ && ls; }
 
-function f() {
-  files=$(git ls-files) &&
-  selected_files=$(echo "$files" | fzf -m --preview 'head -100 {}') &&
-  vim $selected_files
+## コマンド実行後に改行する
+add_newline() {
+  if [[ -z $PS1_NEWLINE_LOGIN ]]; then
+    PS1_NEWLINE_LOGIN=true
+  else
+    printf '\n'
+  fi
 }
-
-## search command history
-function peco-history-selection() {
-  BUFFER=`history -nr 1  | awk '!a[$0]++' | peco`
-  echo $BUFFER
-  echo $BUFFER | perl -pe 'chomp' | pbcopy  # chompで改行を削除する
-  echo "copied the command!"
-  eval $BUFFER
+precmd() {
+  add_newline
 }
-
-## git checkout
-function gcp() {
-    git branch -a --sort=-authordate |
-    grep -v -e '->' -e '*' |
-    perl -pe 's/^\h+//g' |
-    perl -pe 's#^remotes/origin/###' |
-    perl -nle 'print if !$c{$_}++' |
-    peco |
-    xargs git checkout
-}
-
 
 # alias
 alias -g L='| less'
@@ -85,6 +53,7 @@ alias reload='exec $SHELL -l'
 alias zshrc='vim ~/.zshrc'
 alias vimrc='vim ~/.vimrc'
 alias tmuxconf='vim ~/.tmux.conf'
+alias ls='ls -G'
 alias la='ls -a'
 alias ll='ls -l'
 alias lla='ls -la'
@@ -94,17 +63,13 @@ alias hs=peco-history-selection
 alias v='vim'
 alias t='tmux'
 
-## docker alias
+# docker alias
 alias dockerps='docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
 alias dockerpsa='docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
 alias dockerimages="docker images --format \"table {{.Size}}\t{{.Repository}}:{{.Tag}}\t{{.ID}}\" | sed -e '1d' | sort -h -r"
 alias dc='docker compose'
 
-## vim-plug alias
-alias pluginstall='vim +PlugInstall +q +q'
-alias plugclean='vim +PlugClean +q +q'
-
-## git alias
+# git alias
 alias gs='git status'
 alias ga='git add'
 alias gd='git diff'
@@ -114,21 +79,27 @@ alias gcm='git commit -m'
 alias gl='git log --oneline --graph --decorate'
 alias gp='git push origin HEAD'
 alias gf='git fetch'
+alias fix-push='git add . && git commit -m "fix" && git push'
 
+# zsh-cimpletions, zsh-autosuggestions
+if type brew &>/dev/null; then
+  FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+  source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+  autoload -Uz compinit && compinit
+fi
 
-# setup zplug
-export ZPLUG_HOME=/usr/local/opt/zplug
+# zplug
+export ZPLUG_HOME=/opt/homebrew/opt/zplug
 source $ZPLUG_HOME/init.zsh
-
 
 # enhancd
 zplug "b4b4r07/enhancd", use:init.sh
-export ENHANCD_DISABLE_DOT=1     # ..は普通に..する
+export ENHANCD_ENABLE_DOUBLE_DOT=false  # ..は普通に..する
 export ENHANCD_HOOK_AFTER_CD=ls  # cdした後に実行するコマンドを指定
 export ENHANCD_FILTER=fzy
 
+# git-prompt
+zplug "woefe/git-prompt.zsh"
+
 zplug load
 
-
-# zsh-autosuggestions
-source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
