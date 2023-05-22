@@ -1,10 +1,7 @@
 " [Initial settings]
-" * download colorscheme vim-hybrid
-" $ git clone https://github.com/w0ng/vim-hybrid.git ~/.vim/bundle/vim-hybrid.git
-" $ ln -s ~/.vim/bundle/vim-hybrid.git/colors/hybrid.vim ~/.vim/colors/hybrid.vim
-
 " * download colorscheme codedark
 " $ git clone https://github.com/tomasiser/vim-code-dark.git ~/.vim/bundle/vim-code-dark.git
+" $ mkdir ~/.vim/colors
 " $ ln -s ~/.vim/bundle/vim-code-dark.git/colors/codedark.vim ~/.vim/colors/codedark.vim
 
 " * install vim-plug
