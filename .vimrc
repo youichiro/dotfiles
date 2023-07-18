@@ -257,6 +257,8 @@ nnoremap <Space>- :TComment<CR>
 
 
 " fern.vim
+" warningを非表示
+let g:fern_disable_startup_warnings = 1
 " サイドバーで開く/閉じる
 nnoremap <C-n><C-b> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 " サイドバーで開く
