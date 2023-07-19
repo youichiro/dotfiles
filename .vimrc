@@ -69,8 +69,6 @@ set clipboard+=unnamed
 
 " 文字化け対策
 set encoding=utf-8
-" set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8
-" set fileformats=unix,dos,mac
 
 " 補完表示時の挙動
 set completeopt=menuone,noinsert

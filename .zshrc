@@ -10,18 +10,19 @@ zstyle ":completion:*:commands" rehash 1
 # paths
 export PATH="$PATH:/opt/homebrew/bin"
 export PATH="$PATH:$HOME/.pyenv/bin"
+export PATH="$PATH:$HOME/.rbenv/shims"
 export PATH="$PATH:$HOME/.nodenv/shims"
-export PATH="/Users/youichiro/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 
 # evals
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
+eval "$(rbenv init - zsh)"
 eval "$(nodenv init -)"
 eval "$(direnv hook zsh)"
 
 # colors
 autoload -Uz colors && colors
-
 
 # prompt
 # PROMPT="%{${fg[green]}%}▶︎ %~ %{${reset_color}%}
@@ -30,18 +31,6 @@ autoload -Uz colors && colors
 # functions
 ## cdしたらlsする
 function cd(){ builtin cd $@ && ls; }
-
-## コマンド実行後に改行する
-add_newline() {
-  if [[ -z $PS1_NEWLINE_LOGIN ]]; then
-    PS1_NEWLINE_LOGIN=true
-  else
-    printf '\n'
-  fi
-}
-precmd() {
-  add_newline
-}
 
 # alias
 alias -g L='| less'
